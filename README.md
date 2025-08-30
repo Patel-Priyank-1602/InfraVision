@@ -7,9 +7,9 @@ An interactive web platform for **Green Hydrogen Infrastructure Mapping and Opti
 ---
 
 ## 📸 Preview
-<img width="600" alt="Screenshot" src="screenshot.png" />  
-<img width="600" alt="Main" src="main.png" />  
-<img width="600" alt="Score" src="score.png" />  
+<img width="600" alt="Screenshot" src="Screenshot 2025-08-30 155753.png" />  
+<img width="600" alt="Main" src="Main img.png" />  
+<img width="600" alt="Score" src="Score img.png" />  
 
 
 
