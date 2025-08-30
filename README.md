@@ -2,7 +2,7 @@
 
 *Play, Plan, and Prove Impact*
 
-**Website Link:** [Green Hydrogen InfraVision](#)  
+**Visit Site:** [Green Hydrogen InfraVision](https://31de1aba-1185-478a-831e-7860240ccbf2-00-2ah4u2awldhz3.pike.replit.dev/)
 
 ---
 
@@ -18,9 +18,12 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
 
 ## 📸 Preview
 
-<img width="600" alt="Screenshot" src="Screenshot 2025-08-30 155753.png" />  
-<img width="600" alt="Main" src="Main img.png" />  
-<img width="600" alt="Score" src="Score img.png" />  
+<div>
+  <img width="330" alt="Screenshot" src="assets/1.png" style="display:inline-block; margin-right:10px;" />
+  <img width="330" alt="Main" src="assets/5.png" style="display:inline-block; margin-right:10px;" />
+  <img width="330" alt="Score" src="assets/6.png" style="display:inline-block;" />
+</div>
+
 
 ---
 
@@ -37,22 +40,48 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
   - AI Suggested Sites
 * Drag & drop site markers
 * Real-time **Site Assessment & Suitability Analysis**
+<div>
+  <img width="400" alt="Screenshot1" src="assets/5.png" style="display:inline-block; margin-right:10px;" />
+  <img width="400" alt="Screenshot2" src="assets/6.png" style="display:inline-block; margin-right:10px;" />
+  <img width="400" alt="Screenshot3" src="assets/7.png" style="display:inline-block; margin-right:10px;" />
+  <img width="400" alt="Screenshot4" src="assets/20.png" style="display:inline-block;" />
+</div>
+
 
 ### 🎮 Gamified Optimization
 * AI-suggested site highlights
 * Left panel with **AI suggestion plans**
 * Click to jump to suggested location
 * Scoring for site suitability and sustainability impact
+<div>
+  <img width="420" alt="Screenshot1" src="assets/22.png" style="display:inline-block; margin-right:10px;" />
+  <img width="420" alt="Screenshot2" src="assets/23.png" style="display:inline-block; margin-right:10px;" />
+</div>
 
 ### 🤖 AI Assistant
 * Powered by **Gemini API**
 * Provides insights, recommendations, and interactive help
+<img width="420" alt="Screenshot1" src="assets/15.png" style="display:inline-block; margin-right:10px;" />  
 
 ### 📊 Dashboard & Analysis
 * Plants Dashboard with metrics
 * Suitability & impact analysis charts
 * CO₂ saved, industries supported, renewable utilization
 * Export images & share button for quick access
+<div>
+  <img width="400" alt="Screenshot1" src="assets/24.png" style="display:inline-block; margin-right:10px;" />
+  <img width="400" alt="Screenshot2" src="assets/25.png" style="display:inline-block; margin-right:10px;" />
+</div>
+
+### 📍 Drag & Explore Any Location
+* Drag anywhere on the map
+* Access Site Assessment details: terrain, infrastructure proximity, land availability
+* Check Impact Metrics: CO₂ saved, industries supported, renewable utilization
+* Overall Score: provides a single metric summarizing site viability and planning potential
+<div>
+  <img width="400" alt="Screenshot1" src="assets/26.png" style="display:inline-block; margin-right:10px;" />
+  <img width="400" alt="Screenshot2" src="assets/27.png" style="display:inline-block; margin-right:10px;" />
+</div>
 
 ### 🌙 Other Features
 * Dark/Light mode toggle
@@ -69,6 +98,7 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
 3. Drag & drop your own plant → get suitability score & analysis.
 4. Open the dashboard → view CO₂ savings, industries supported, renewables usage.
 5. Export & share → quick access for presentations and reports.
+<img width="400" alt="Screenshot2" src="assets/hackethon.drawio.png" style="display:inline-block; margin-right:10px;" />
 
 ---
 
@@ -115,6 +145,7 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
 * **Dashboard** → Main map, AI suggestions, plants dashboard, drag & drop, site assessment  
 * **About** → Project description, team, impact  
 * **Help** → Support form  
+<img width="1000" alt="Screenshot2" src="assets/28.png" style="display:inline-block; margin-right:10px;" />
 
 ---
 
