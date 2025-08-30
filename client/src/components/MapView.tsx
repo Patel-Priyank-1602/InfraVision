@@ -3,10 +3,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Menu, X, TrendingUp } from "lucide-react";
+import { Menu, X, TrendingUp, Download, Share2 } from "lucide-react";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
 import type { HydrogenSite, RenewableSource, DemandCenter, SiteAnalysis } from "@/types/hydrogen";
+import SiteAnalysisPanel from "./SiteAnalysisPanel";
+import html2canvas from "html2canvas";
 
 // Import Leaflet statically
 import L from 'leaflet';
@@ -17,26 +19,15 @@ interface MapViewProps {
   onScoreUpdate: (analysis: SiteAnalysis) => void;
   sidebarOpen: boolean;
   onSidebarToggle: () => void;
+  enabledLayers: { [key: string]: boolean };
+  onMapReady: (map: any) => void;
 }
 
-// Helper function to safely parse coordinates
-const parseCoordinate = (value: string | number | undefined | null): number | null => {
-  if (value === undefined || value === null || value === '') return null;
-  const parsed = typeof value === 'string' ? parseFloat(value) : value;
-  return isNaN(parsed) ? null : parsed;
-};
-
-// Helper function to validate coordinates
-const isValidCoordinates = (lat: number | null, lng: number | null): boolean => {
-  return lat !== null && lng !== null && 
-         lat >= -90 && lat <= 90 && 
-         lng >= -180 && lng <= 180;
-};
-
-export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSidebarToggle }: MapViewProps) {
+export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSidebarToggle, enabledLayers, onMapReady }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const dragMarkerRef = useRef<any>(null);
+  const layerGroupsRef = useRef<{ [key: string]: any }>({});
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
@@ -44,6 +35,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
   // State for analytics panel
   const [currentAnalysis, setCurrentAnalysis] = useState<SiteAnalysis | null>(null);
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Fetch hydrogen sites
   const { data: hydrogenSites = [] } = useQuery<HydrogenSite[]>({
@@ -148,19 +140,107 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
       maxZoom: 18
     }).addTo(map);
 
-    // Add layer controls
+    // Add multiple map layer options
     const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: '© Esri'
     });
 
-    const baseLayers = {
-      "Street Map": osmLayer,
-      "Satellite": satelliteLayer
+    const terrainLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenTopoMap'
+    });
+
+    const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© CartoDB'
+    });
+
+    // Create layer groups for different data types
+    const renewableLayerGroup = L.layerGroup();
+    const demandLayerGroup = L.layerGroup();
+    const hydrogenLayerGroup = L.layerGroup();
+    const aiSuggestionsLayerGroup = L.layerGroup();
+
+    // Store layer groups for management
+    layerGroupsRef.current = {
+      renewable: renewableLayerGroup,
+      demand: demandLayerGroup,
+      hydrogen: hydrogenLayerGroup,
+      aiSuggestions: aiSuggestionsLayerGroup
     };
 
-    L.control.layers(baseLayers).addTo(map);
+    // Add layer groups based on enabled state
+    if (enabledLayers.renewable) renewableLayerGroup.addTo(map);
+    if (enabledLayers.demand) demandLayerGroup.addTo(map);
+    if (enabledLayers.hydrogen) hydrogenLayerGroup.addTo(map);
+    if (enabledLayers.aiSuggestions) aiSuggestionsLayerGroup.addTo(map);
+
+    const baseLayers = {
+      "Street Map": osmLayer,
+      "Satellite": satelliteLayer,
+      "Terrain": terrainLayer,
+      "Dark Mode": darkLayer
+    };
+
+    // Create pipeline network layer (simulated major industrial corridors)
+    const pipelineLayerGroup = L.layerGroup();
+    const majorPipelines = [
+      // Delhi-Mumbai Industrial Corridor
+      [[28.6139, 77.2090], [19.0760, 72.8777]],
+      // Chennai-Bangalore Corridor
+      [[13.0827, 80.2707], [12.9716, 77.5946]],
+      // Kolkata-Delhi Corridor
+      [[22.5726, 88.3639], [28.6139, 77.2090]],
+      // Gujarat-Rajasthan Corridor
+      [[23.0225, 72.5714], [26.9124, 75.7873]]
+    ];
+
+    majorPipelines.forEach((pipeline, index) => {
+      const polyline = L.polyline(pipeline as [number, number][], {
+        color: '#9333ea',
+        weight: 3,
+        opacity: 0.7,
+        dashArray: '10, 10'
+      }).addTo(pipelineLayerGroup);
+      
+      polyline.bindPopup(`Pipeline Corridor ${index + 1}<br/>Planned H₂ Infrastructure`);
+    });
+
+    // Create regulatory zones layer (key policy zones)
+    const regulatoryLayerGroup = L.layerGroup();
+    const policyZones = [
+      { name: "Gujarat Green Hydrogen Hub", lat: 23.0225, lng: 72.5714, radius: 80000 },
+      { name: "Rajasthan Renewable Zone", lat: 26.9124, lng: 75.7873, radius: 70000 },
+      { name: "Ladakh Solar Zone", lat: 34.1526, lng: 77.5771, radius: 50000 },
+      { name: "Tamil Nadu Wind Corridor", lat: 11.1271, lng: 78.6569, radius: 60000 }
+    ];
+
+    policyZones.forEach(zone => {
+      const circle = L.circle([zone.lat, zone.lng], {
+        color: '#f59e0b',
+        fillColor: '#fbbf24',
+        fillOpacity: 0.1,
+        radius: zone.radius,
+        weight: 2
+      }).addTo(regulatoryLayerGroup);
+      
+      circle.bindPopup(`<strong>${zone.name}</strong><br/>Special Economic Zone<br/>Enhanced Policy Support`);
+    });
+
+    const overlayLayers = {
+      "Existing H₂ Plants": hydrogenLayerGroup,
+      "Renewable Sources": renewableLayerGroup,
+      "Demand Centers": demandLayerGroup,
+      "Pipeline Network": pipelineLayerGroup,
+      "Regulatory Zones": regulatoryLayerGroup,
+      "AI Suggested Sites": aiSuggestionsLayerGroup
+    };
+
+    L.control.layers(baseLayers, overlayLayers, {
+      position: 'topright',
+      collapsed: false
+    }).addTo(map);
 
     mapInstanceRef.current = map;
+    onMapReady(map);
 
     // Map click handler for creating new sites
     map.on('click', (e: any) => {
@@ -232,7 +312,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
     };
   }, []);
 
-  // Add markers for existing hydrogen sites with coordinate validation
+  // Add markers for existing hydrogen sites
   useEffect(() => {
     if (!mapInstanceRef.current) return;
 
@@ -245,26 +325,16 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
       }
     });
 
-    // Add user hydrogen sites with validation
+    // Add user hydrogen sites to layer group
     hydrogenSites.forEach((site) => {
-      const lat = parseCoordinate(site.latitude);
-      const lng = parseCoordinate(site.longitude);
-
-      if (!isValidCoordinates(lat, lng)) {
-        console.warn(`Invalid coordinates for hydrogen site ${site.name}:`, { 
-          latitude: site.latitude, 
-          longitude: site.longitude 
-        });
-        return;
-      }
-
-      const marker = L.marker([lat!, lng!], {
-        isHydrogenSite: true,
+      const marker = L.marker([parseFloat(site.latitude), parseFloat(site.longitude)], {
         icon: L.divIcon({
           html: `<div style="background: hsl(203 88% 53%); width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2);"></div>`,
           iconSize: [20, 20]
         })
-      }).addTo(map);
+      }).addTo(layerGroupsRef.current.hydrogen);
+      
+      (marker as any).isHydrogenSite = true;
 
       marker.bindPopup(`
         <div style="padding: 12px; min-width: 200px;">
@@ -277,7 +347,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
             <span style="font-size: 12px; font-weight: 600;">Suitability Score: ${site.suitabilityScore}/100</span>
           </div>
           <div style="font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 6px; margin-top: 6px;">
-            📍 ${lat!.toFixed(4)}, ${lng!.toFixed(4)}
+            📍 ${parseFloat(site.latitude).toFixed(4)}, ${parseFloat(site.longitude).toFixed(4)}
           </div>
         </div>
       `);
@@ -285,28 +355,17 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
       marker.on('click', () => onSiteSelect(site));
     });
 
-    // Add AI suggested sites with glow effect - WITH COORDINATE VALIDATION
+    // Add AI suggested sites to layer group with glow effect
     aiSuggestions.forEach((site) => {
-      const lat = parseCoordinate(site.latitude);
-      const lng = parseCoordinate(site.longitude);
-
-      // Only create marker if coordinates are valid
-      if (!isValidCoordinates(lat, lng)) {
-        console.warn(`Invalid coordinates for AI suggestion ${site.name}:`, { 
-          latitude: site.latitude, 
-          longitude: site.longitude 
-        });
-        return;
-      }
-
-      const marker = L.marker([lat!, lng!], {
-        isHydrogenSite: true,
+      const marker = L.marker([parseFloat(site.latitude), parseFloat(site.longitude)], {
         icon: L.divIcon({
           className: 'ai-glow-marker',
           html: `<div style="background: hsl(158 64% 52%); width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px hsl(158 64% 52%), 0 2px 6px rgba(0,0,0,0.2); animation: pulse 2s infinite;"></div>`,
           iconSize: [20, 20]
         })
-      }).addTo(map);
+      }).addTo(layerGroupsRef.current.aiSuggestions);
+      
+      (marker as any).isHydrogenSite = true;
 
       marker.bindPopup(`
         <div style="padding: 12px; min-width: 200px;">
@@ -319,7 +378,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
             <span style="font-size: 12px; font-weight: 600;">Suitability Score: ${site.suitabilityScore}/100</span>
           </div>
           <div style="font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 6px; margin-top: 6px;">
-            🤖 AI Analysis • 📍 ${lat!.toFixed(4)}, ${lng!.toFixed(4)}
+            🤖 AI Analysis • 📍 ${parseFloat(site.latitude).toFixed(4)}, ${parseFloat(site.longitude).toFixed(4)}
           </div>
         </div>
       `);
@@ -328,7 +387,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
     });
   }, [hydrogenSites, aiSuggestions, onSiteSelect]);
 
-  // Add renewable energy sources with coordinate validation
+  // Add renewable energy sources
   useEffect(() => {
     if (!mapInstanceRef.current) return;
 
@@ -342,28 +401,23 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
     });
 
     renewableSources.forEach((source) => {
-      const lat = parseCoordinate(source.latitude);
-      const lng = parseCoordinate(source.longitude);
+      const getIconAndColor = (type: string) => {
+        if (type.toLowerCase().includes('wind')) return { icon: '🌪️', color: '#10b981' };
+        if (type.toLowerCase().includes('solar')) return { icon: '☀️', color: '#f59e0b' };
+        return { icon: '⚡', color: '#3b82f6' };
+      };
+      
+      const { icon, color } = getIconAndColor(source.type);
 
-      if (!isValidCoordinates(lat, lng)) {
-        console.warn(`Invalid coordinates for renewable source ${source.name}:`, { 
-          latitude: source.latitude, 
-          longitude: source.longitude 
-        });
-        return;
-      }
-
-      const icon = source.type === 'wind' ? 'fa-wind' : source.type === 'solar' ? 'fa-sun' : 'fa-bolt';
-      const color = source.type === 'wind' ? '#10b981' : source.type === 'solar' ? '#f59e0b' : '#3b82f6';
-
-      const marker = L.marker([lat!, lng!], {
-        isRenewableSource: true,
+      const marker = L.marker([parseFloat(source.latitude), parseFloat(source.longitude)], {
         icon: L.divIcon({
-          html: `<i class="fas ${icon}" style="color: ${color}; font-size: 14px;"></i>`,
-          iconSize: [14, 14],
+          html: `<div style="font-size: 16px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">${icon}</div>`,
+          iconSize: [20, 20],
           className: 'renewable-marker'
         })
-      }).addTo(map);
+      }).addTo(layerGroupsRef.current.renewable);
+      
+      (marker as any).isRenewableSource = true;
 
       marker.bindPopup(`
         <div style="padding: 8px;">
@@ -375,7 +429,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
     });
   }, [renewableSources]);
 
-  // Add demand centers with coordinate validation
+  // Add demand centers
   useEffect(() => {
     if (!mapInstanceRef.current) return;
 
@@ -389,31 +443,36 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
     });
 
     demandCenters.forEach((center) => {
-      const lat = parseCoordinate(center.latitude);
-      const lng = parseCoordinate(center.longitude);
+      const getIconAndColor = (type: string, level: string) => {
+        const icons = {
+          'steel': '🏭',
+          'transport': '🚛',
+          'chemical': '🧪',
+          'refinery': '🛢️',
+          'port': '🚢'
+        };
+        const colors = {
+          'High': '#ef4444',
+          'Medium': '#f59e0b',
+          'Low': '#10b981'
+        };
+        return {
+          icon: icons[type.toLowerCase().split(' ')[0] as keyof typeof icons] || '🏢',
+          color: colors[level as keyof typeof colors] || '#6b7280'
+        };
+      };
+      
+      const { icon, color } = getIconAndColor(center.type, center.demandLevel);
 
-      if (!isValidCoordinates(lat, lng)) {
-        console.warn(`Invalid coordinates for demand center ${center.name}:`, { 
-          latitude: center.latitude, 
-          longitude: center.longitude 
-        });
-        return;
-      }
-
-      const icon = center.type === 'steel' ? 'fa-industry' : 
-                   center.type === 'transport' ? 'fa-truck' : 
-                   center.type === 'chemical' ? 'fa-flask' : 'fa-building';
-      const color = center.demandLevel === 'high' ? '#ef4444' : 
-                    center.demandLevel === 'medium' ? '#f59e0b' : '#10b981';
-
-      const marker = L.marker([lat!, lng!], {
-        isDemandCenter: true,
+      const marker = L.marker([parseFloat(center.latitude), parseFloat(center.longitude)], {
         icon: L.divIcon({
-          html: `<i class="fas ${icon}" style="color: ${color}; font-size: 12px;"></i>`,
-          iconSize: [12, 12],
+          html: `<div style="font-size: 14px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">${icon}</div>`,
+          iconSize: [18, 18],
           className: 'demand-marker'
         })
-      }).addTo(map);
+      }).addTo(layerGroupsRef.current.demand);
+      
+      (marker as any).isDemandCenter = true;
 
       marker.bindPopup(`
         <div style="padding: 8px;">
@@ -424,6 +483,90 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
       `);
     });
   }, [demandCenters]);
+
+  // Handle layer visibility changes
+  useEffect(() => {
+    if (!mapInstanceRef.current || !layerGroupsRef.current) return;
+
+    const map = mapInstanceRef.current;
+    const layerGroups = layerGroupsRef.current;
+
+    Object.keys(enabledLayers).forEach(layerType => {
+      const layerGroup = layerGroups[layerType];
+      if (layerGroup) {
+        if (enabledLayers[layerType]) {
+          if (!map.hasLayer(layerGroup)) {
+            layerGroup.addTo(map);
+          }
+        } else {
+          if (map.hasLayer(layerGroup)) {
+            map.removeLayer(layerGroup);
+          }
+        }
+      }
+    });
+  }, [enabledLayers]);
+
+
+  // Export map as PDF
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      const mapElement = mapRef.current;
+      if (mapElement) {
+        const canvas = await html2canvas(mapElement, {
+          useCORS: true,
+          scale: 2,
+          width: mapElement.offsetWidth,
+          height: mapElement.offsetHeight
+        });
+        
+        const link = document.createElement('a');
+        link.download = `infravision-map-${new Date().toISOString().split('T')[0]}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        toast({
+          title: "Map Exported",
+          description: "Your map has been saved as a PNG file.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "Failed to export map. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Share map
+  const handleShareMap = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'InfraVision - Green Hydrogen Infrastructure Plan',
+          text: 'Check out this hydrogen infrastructure planning map!',
+          url: window.location.href
+        });
+      } else {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Link Copied",
+          description: "Map link has been copied to clipboard.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Share Failed",
+        description: "Failed to share map. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Get score color based on value
   const getScoreColor = (score: number) => {
@@ -438,79 +581,13 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
       {/* Map Container */}
       <div ref={mapRef} className="w-full h-full" data-testid="map-container" />
 
-      {/* Floating Analytics Panel */}
+      {/* Combined Site Analysis Panel */}
       {showAnalytics && currentAnalysis && (
-        <div 
-          className="absolute top-4 left-4 z-[1000] bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm"
-          style={{ 
-            minWidth: '300px',
-            backdropFilter: 'blur(10px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.95)'
-          }}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-blue-600" />
-              <h3 className="font-semibold text-sm text-gray-900">Site Analysis</h3>
-            </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              onClick={() => setShowAnalytics(false)}
-              className="w-6 h-6 hover:bg-gray-100"
-            >
-              <X className="w-3 h-3" />
-            </Button>
-          </div>
-
-          {/* Suitability Score */}
-          <div className={`rounded-lg p-3 mb-3 border ${getScoreColor(currentAnalysis.suitabilityScore)}`}>
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Suitability Score</span>
-              <span className="text-lg font-bold">{currentAnalysis.suitabilityScore}/100</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-              <div 
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  currentAnalysis.suitabilityScore >= 80 ? 'bg-green-500' :
-                  currentAnalysis.suitabilityScore >= 60 ? 'bg-yellow-500' :
-                  currentAnalysis.suitabilityScore >= 40 ? 'bg-orange-500' : 'bg-red-500'
-                }`}
-                style={{ width: `${currentAnalysis.suitabilityScore}%` }}
-              ></div>
-            </div>
-          </div>
-
-          {/* Key Factors */}
-          {currentAnalysis.factors && (
-            <div className="space-y-2">
-              <h4 className="text-xs font-medium text-gray-700 uppercase tracking-wide">Key Factors</h4>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                {Object.entries(currentAnalysis.factors).slice(0, 4).map(([key, value]) => (
-                  <div key={key} className="bg-gray-50 rounded p-2">
-                    <div className="font-medium text-gray-700 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
-                    <div className="text-gray-600">{typeof value === 'number' ? `${value}/10` : value}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Analysis Status */}
-          {analyzeSiteMutation.isPending && (
-            <div className="mt-3 flex items-center gap-2 text-xs text-blue-600">
-              <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-              Analyzing location...
-            </div>
-          )}
-
-          {/* Coordinates */}
-          <div className="mt-3 pt-2 border-t border-gray-100">
-            <div className="text-xs text-gray-500">
-              📍 Current position being analyzed
-            </div>
-          </div>
-        </div>
+        <SiteAnalysisPanel 
+          analysis={currentAnalysis}
+          onClose={() => setShowAnalytics(false)}
+          isLoading={analyzeSiteMutation.isPending}
+        />
       )}
 
       {/* Floating Controls */}
@@ -528,7 +605,55 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
         )}
       </div>
 
-  
+      {/* Export and Share Controls */}
+      <div className="absolute bottom-4 right-4 z-[1000] space-y-2">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleExportPDF}
+          disabled={isExporting}
+          className="bg-card border border-border shadow-lg hover:bg-muted gap-2"
+          data-testid="button-export-pdf"
+        >
+          <Download className="w-4 h-4" />
+          {isExporting ? "Exporting..." : "Export Image"}
+        </Button>
+        
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleShareMap}
+          className="bg-card border border-border shadow-lg hover:bg-muted gap-2"
+          data-testid="button-share-map"
+        >
+          <Share2 className="w-4 h-4" />
+          Share
+        </Button>
+      </div>
+
+      {/* Enhanced Instructions with Indian Context */}
+      <div className="absolute bottom-4 left-4 z-[999] bg-card border border-border rounded-lg p-3 md:p-4 shadow-lg max-w-xs md:max-w-sm hidden lg:block">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
+            <p className="text-xs text-muted-foreground">
+              <strong>Click</strong> anywhere in India to place hydrogen plant
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+            <p className="text-xs text-muted-foreground">
+              <strong>Drag</strong> marker to find optimal location
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            <p className="text-xs text-muted-foreground">
+              <strong>Double-click</strong> to create permanent site
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Analytics Toggle Button (when panel is hidden) */}
       {!showAnalytics && currentAnalysis && (
@@ -540,7 +665,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
             className="bg-card border border-border shadow-lg hover:bg-muted flex items-center gap-2"
           >
             <TrendingUp className="w-4 h-4" />
-            <span className="text-sm">Show Analysis</span>
+            <span className="text-sm hidden md:inline">Show Analysis</span>
             <div className={`px-2 py-1 rounded text-xs font-bold ${getScoreColor(currentAnalysis.suitabilityScore)}`}>
               {currentAnalysis.suitabilityScore}
             </div>

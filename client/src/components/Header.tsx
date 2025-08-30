@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSupabaseAuth } from "@/components/SupabaseAuthProvider";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,13 +13,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import HelpForm from "@/components/HelpForm";
-import { Leaf, Sun, Moon, MessageSquare, ChevronDown, User, Settings, LogOut, HelpCircle } from "lucide-react";
+import { Leaf, Sun, Moon, MessageSquare, ChevronDown, User, Settings, LogOut, HelpCircle, Info, BarChart3 } from "lucide-react";
 
 interface HeaderProps {
   onChatToggle: () => void;
+  onDashboardToggle?: () => void;
 }
 
-export default function Header({ onChatToggle }: HeaderProps) {
+export default function Header({ onChatToggle, onDashboardToggle }: HeaderProps) {
   const { user } = useAuth();
   const { signOut } = useSupabaseAuth();
   const { theme, toggleTheme } = useTheme();
@@ -31,6 +33,7 @@ export default function Header({ onChatToggle }: HeaderProps) {
   const handleHelpClick = () => {
     setShowHelpForm(true);
   };
+
 
   return (
     <header className="bg-card border-b border-border shadow-sm sticky top-0 z-50">
@@ -48,19 +51,38 @@ export default function Header({ onChatToggle }: HeaderProps) {
           </div>
           
           {/* Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6">
-            <a href="#" className="text-foreground hover:text-primary transition-colors font-medium">
-              Dashboard
-            </a>
+          <div className="flex items-center space-x-4">
+            
+            <nav className="hidden md:flex items-center space-x-6">
+              {onDashboardToggle && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="gap-2"
+                  onClick={onDashboardToggle}
+                  data-testid="button-dashboard-nav"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  Dashboard
+                </Button>
+              )}
+              
+              <Link href="/about">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Info className="w-4 h-4" />
+                  About
+                </Button>
+              </Link>
 
-            <button 
-              onClick={handleHelpClick}
-              className="text-muted-foreground hover:text-primary transition-colors"
-              data-testid="button-help-nav"
-            >
-              Help
-            </button>
-          </nav>
+              <button 
+                onClick={handleHelpClick}
+                className="text-muted-foreground hover:text-primary transition-colors"
+                data-testid="button-help-nav"
+              >
+                Help
+              </button>
+            </nav>
+          </div>
           
           {/* Actions */}
           <div className="flex items-center space-x-4">
@@ -102,7 +124,7 @@ export default function Header({ onChatToggle }: HeaderProps) {
                     )}
                     <div className="hidden sm:block text-left">
                       <div className="text-sm font-medium" data-testid="text-username">
-                        {user.user_metadata?.full_name || user.user_metadata?.name || 'User'}
+                        {user.user_metadata?.username || user.user_metadata?.full_name || user.user_metadata?.name || 'User'}
                       </div>
                       <div className="text-xs text-muted-foreground truncate max-w-[120px]" data-testid="text-user-email">
                         {user.email}
@@ -123,7 +145,7 @@ export default function Header({ onChatToggle }: HeaderProps) {
                       )}
                       <div>
                         <div className="font-medium text-sm">
-                          {user.user_metadata?.full_name || user.user_metadata?.name || 'User'}
+                          {user.user_metadata?.username || user.user_metadata?.full_name || user.user_metadata?.name || 'User'}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {user.email}

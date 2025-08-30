@@ -1,9 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ThemeProvider";
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { supabase } from '@/lib/supabase';
+import CustomAuth from "@/components/CustomAuth";
 import { useSupabaseAuth } from "@/components/SupabaseAuthProvider";
 import { useState } from "react";
 import { Sun, Moon, Leaf, Brain, BarChart3, MapPin, Zap, Building2, X } from "lucide-react";
@@ -205,59 +203,7 @@ export default function Landing() {
       
       {/* Auth Modal */}
       {showAuth && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-md mx-4">
-            <CardContent className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold">Welcome to InfraVision</h2>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowAuth(false)}
-                  data-testid="button-close-auth"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-              <Auth
-                supabaseClient={supabase}
-                appearance={{
-                  theme: ThemeSupa,
-                  variables: {
-                    default: {
-                      colors: {
-                        brand: 'hsl(158 64% 52%)',
-                        brandAccent: 'hsl(158 64% 45%)',
-                        defaultButtonBackground: theme === 'dark' ? 'hsl(217 32% 17%)' : 'hsl(0 0% 100%)',
-                        defaultButtonBackgroundHover: theme === 'dark' ? 'hsl(217 32% 22%)' : 'hsl(0 0% 96%)',
-                        defaultButtonBorder: 'hsl(var(--border))',
-                        defaultButtonText: theme === 'dark' ? 'hsl(210 40% 98%)' : 'hsl(222 84% 4.9%)',
-                        inputBackground: theme === 'dark' ? 'hsl(217 32% 17%)' : 'hsl(0 0% 100%)',
-                        inputBorder: 'hsl(var(--border))',
-                        inputText: theme === 'dark' ? 'hsl(210 40% 98%)' : 'hsl(222 84% 4.9%)',
-                        inputPlaceholder: 'hsl(var(--muted-foreground))',
-                        messageText: theme === 'dark' ? 'hsl(210 40% 98%)' : 'hsl(222 84% 4.9%)',
-                      },
-                    },
-                  },
-                  className: {
-                    container: 'auth-container',
-                    button: 'auth-button',
-                    input: 'auth-input',
-                    label: theme === 'dark' ? 'auth-label-dark' : 'auth-label-light',
-                    message: theme === 'dark' ? 'auth-message-dark' : 'auth-message-light',
-                  },
-                }}
-                providers={['google']}
-                redirectTo={window.location.origin}
-                view="sign_in"
-                additionalData={{
-                  username: true
-                }}
-              />
-            </CardContent>
-          </Card>
-        </div>
+        <CustomAuth onClose={() => setShowAuth(false)} />
       )}
     </div>
   );

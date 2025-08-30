@@ -39,3 +39,4 @@ args = "npm run dev"
 waitForPort = 5000
 
 [agent]
+integrations = ["javascript_gemini==1.0.0"]

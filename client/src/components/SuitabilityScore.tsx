@@ -28,10 +28,10 @@ export default function SuitabilityScore({ analysis, onClose }: SuitabilityScore
   };
 
   return (
-    <Card className="absolute top-4 left-4 z-[1000] w-80 bg-card border border-border shadow-lg">
+    <Card className="absolute top-4 left-4 z-[1000] w-80 md:w-80 max-w-[calc(100vw-2rem)] bg-card border border-border shadow-lg">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-foreground">Site Sustainability</h3>
+          <h3 className="font-semibold text-foreground">Site Suitability</h3>
           <Button
             size="icon"
             variant="ghost"
@@ -43,7 +43,7 @@ export default function SuitabilityScore({ analysis, onClose }: SuitabilityScore
           </Button>
         </div>
       </CardHeader>
-
+      
       <CardContent className="space-y-4">
         {/* Score Display */}
         <div className="flex items-center space-x-3">
@@ -116,10 +116,10 @@ export default function SuitabilityScore({ analysis, onClose }: SuitabilityScore
           </div>
         </div>
 
-        {/* Site Sustainability */}
+        {/* Recommendations */}
         {analysis.recommendations.length > 0 && (
           <div className="pt-2 border-t border-border">
-            <p className="text-xs text-muted-foreground mb-1">Site Sustainability:</p>
+            <p className="text-xs text-muted-foreground mb-1">Recommendations:</p>
             <ul className="text-xs space-y-1">
               {analysis.recommendations.slice(0, 2).map((rec, index) => (
                 <li key={index} className="text-foreground">• {rec}</li>
