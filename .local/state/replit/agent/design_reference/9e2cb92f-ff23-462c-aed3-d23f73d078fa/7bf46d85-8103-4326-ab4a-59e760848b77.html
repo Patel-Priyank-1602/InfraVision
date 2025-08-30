@@ -1,0 +1,820 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Hydrogen InfraVision - Play, Plan, and Prove Impact</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                }
+            }
+        }
+    };
+    </script>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --radius: 0.5rem;
+            /* Light theme */
+            --background: hsl(0 0% 98%);
+            --foreground: hsl(240 10% 3.9%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(240 10% 3.9%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(240 10% 3.9%);
+            --primary: hsl(158 64% 52%);
+            --primary-foreground: hsl(0 0% 98%);
+            --secondary: hsl(199 89% 48%);
+            --secondary-foreground: hsl(0 0% 98%);
+            --muted: hsl(240 4.8% 95.9%);
+            --muted-foreground: hsl(240 3.8% 46.1%);
+            --accent: hsl(48 96% 53%);
+            --accent-foreground: hsl(240 5.9% 10%);
+            --destructive: hsl(0 84% 60%);
+            --destructive-foreground: hsl(0 0% 98%);
+            --border: hsl(240 5.9% 90%);
+            --input: hsl(240 5.9% 90%);
+            --ring: hsl(158 64% 52%);
+            
+            --font-sans: 'Inter', system-ui, sans-serif;
+        }
+        
+        .dark {
+            --background: hsl(222 84% 4.9%);
+            --foreground: hsl(210 40% 98%);
+            --card: hsl(222 84% 4.9%);
+            --card-foreground: hsl(210 40% 98%);
+            --popover: hsl(222 84% 4.9%);
+            --popover-foreground: hsl(210 40% 98%);
+            --primary: hsl(158 64% 52%);
+            --primary-foreground: hsl(222 84% 4.9%);
+            --secondary: hsl(217 32% 17%);
+            --secondary-foreground: hsl(210 40% 98%);
+            --muted: hsl(217 32% 17%);
+            --muted-foreground: hsl(215 20.2% 65.1%);
+            --accent: hsl(48 96% 53%);
+            --accent-foreground: hsl(222 84% 4.9%);
+            --destructive: hsl(0 62% 30%);
+            --destructive-foreground: hsl(210 40% 98%);
+            --border: hsl(217 32% 17%);
+            --input: hsl(217 32% 17%);
+            --ring: hsl(158 64% 52%);
+        }
+        
+        * {
+            border-color: hsl(var(--border));
+        }
+        
+        body {
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            font-family: var(--font-sans);
+        }
+        
+        .leaflet-container {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .map-container {
+            height: calc(100vh - 4rem);
+        }
+        
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .score-excellent { color: hsl(142 76% 36%); }
+        .score-good { color: hsl(48 96% 53%); }
+        .score-poor { color: hsl(0 84% 60%); }
+        
+        .ai-glow {
+            animation: pulse 2s infinite;
+            filter: drop-shadow(0 0 10px hsl(158 64% 52%));
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .chat-bubble {
+            max-width: 80%;
+        }
+        
+        .chat-user {
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+        }
+        
+        .chat-bot {
+            background: hsl(var(--muted));
+            color: hsl(var(--foreground));
+        }
+    </style>
+</head>
+<body class="font-sans bg-background text-foreground">
+    <!-- @COMPONENT: Header [Navigation with auth and theme toggle] -->
+    <header class="bg-card border-b border-border shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                        <i class="fas fa-leaf text-primary-foreground text-sm"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-foreground">InfraVision</h1>
+                        <p class="text-xs text-muted-foreground">Green Hydrogen Planning</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="#" class="text-foreground hover:text-primary transition-colors font-medium">Dashboard</a>
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">Projects</a>
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">Analytics</a>
+                    <a href="#" class="text-muted-foreground hover:text-primary transition-colors">Help</a>
+                </nav>
+                
+                <!-- Actions -->
+                <div class="flex items-center space-x-4">
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle" class="p-2 rounded-md hover:bg-muted transition-colors">
+                        <i class="fas fa-sun text-accent dark:hidden"></i>
+                        <i class="fas fa-moon text-accent hidden dark:block"></i>
+                    </button>
+                    
+                    <!-- Chatbot Toggle -->
+                    <button id="chat-toggle" class="p-2 rounded-md hover:bg-muted transition-colors relative">
+                        <i class="fas fa-comments text-primary"></i>
+                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-accent rounded-full"></span>
+                    </button>
+                    
+                    <!-- User Menu -->
+                    <div class="flex items-center space-x-3" data-mock="true">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=32&h=32" alt="User avatar" class="w-8 h-8 rounded-full object-cover" />
+                        <span data-bind="user.name" class="hidden sm:block text-sm font-medium">John Doe</span>
+                        <button class="text-muted-foreground hover:text-foreground">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <div class="flex h-screen bg-background">
+        <!-- @COMPONENT: Sidebar [Control panel with tools and settings] -->
+        <aside id="sidebar" class="w-80 bg-card border-r border-border overflow-y-auto sidebar-transition">
+            <div class="p-6 space-y-6">
+                <!-- AI Suggestions -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-foreground flex items-center space-x-2">
+                            <i class="fas fa-brain text-primary"></i>
+                            <span>AI Suggestions</span>
+                        </h2>
+                        <span class="text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full font-medium">3 Sites</span>
+                    </div>
+                    
+                    <!-- @MAP: aiSuggestions.map(suggestion => ( -->
+                    <div class="bg-muted rounded-lg p-4 border border-border hover:border-primary transition-colors cursor-pointer" data-mock="true">
+                        <div class="flex items-start justify-between mb-2">
+                            <h3 class="font-medium text-foreground">Northern Coast Region</h3>
+                            <span class="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">Score: 92</span>
+                        </div>
+                        <p class="text-sm text-muted-foreground mb-3">High renewable access, excellent transport links</p>
+                        <div class="flex items-center space-x-4 text-xs">
+                            <span class="flex items-center space-x-1 text-primary">
+                                <i class="fas fa-wind"></i>
+                                <span>Wind: 85%</span>
+                            </span>
+                            <span class="flex items-center space-x-1 text-accent">
+                                <i class="fas fa-industry"></i>
+                                <span>Demand: High</span>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                    
+                    <div class="bg-muted rounded-lg p-4 border border-border hover:border-primary transition-colors cursor-pointer" data-mock="true">
+                        <div class="flex items-start justify-between mb-2">
+                            <h3 class="font-medium text-foreground">Industrial Valley</h3>
+                            <span class="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">Score: 88</span>
+                        </div>
+                        <p class="text-sm text-muted-foreground mb-3">Central location, multiple demand centers nearby</p>
+                        <div class="flex items-center space-x-4 text-xs">
+                            <span class="flex items-center space-x-1 text-accent">
+                                <i class="fas fa-sun"></i>
+                                <span>Solar: 78%</span>
+                            </span>
+                            <span class="flex items-center space-x-1 text-primary">
+                                <i class="fas fa-shipping-fast"></i>
+                                <span>Logistics: A+</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-muted rounded-lg p-4 border border-border hover:border-primary transition-colors cursor-pointer" data-mock="true">
+                        <div class="flex items-start justify-between mb-2">
+                            <h3 class="font-medium text-foreground">Eastern Highlands</h3>
+                            <span class="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full">Score: 84</span>
+                        </div>
+                        <p class="text-sm text-muted-foreground mb-3">Good renewable mix, developing infrastructure</p>
+                        <div class="flex items-center space-x-4 text-xs">
+                            <span class="flex items-center space-x-1 text-primary">
+                                <i class="fas fa-water"></i>
+                                <span>Hydro: 65%</span>
+                            </span>
+                            <span class="flex items-center space-x-1 text-muted-foreground">
+                                <i class="fas fa-road"></i>
+                                <span>Access: Good</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Map Layers -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-foreground flex items-center space-x-2">
+                        <i class="fas fa-layers text-secondary"></i>
+                        <span>Map Layers</span>
+                    </h2>
+                    
+                    <div class="space-y-3">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" checked class="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-2" />
+                            <span class="text-sm text-foreground">Existing H₂ Plants</span>
+                            <i class="fas fa-industry text-primary text-xs ml-auto"></i>
+                        </label>
+                        
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" checked class="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-2" />
+                            <span class="text-sm text-foreground">Renewable Sources</span>
+                            <i class="fas fa-bolt text-accent text-xs ml-auto"></i>
+                        </label>
+                        
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" checked class="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-2" />
+                            <span class="text-sm text-foreground">Demand Centers</span>
+                            <i class="fas fa-building text-secondary text-xs ml-auto"></i>
+                        </label>
+                        
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-2" />
+                            <span class="text-sm text-foreground">Pipeline Network</span>
+                            <i class="fas fa-stream text-muted-foreground text-xs ml-auto"></i>
+                        </label>
+                        
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-2" />
+                            <span class="text-sm text-foreground">Regulatory Zones</span>
+                            <i class="fas fa-shield-alt text-muted-foreground text-xs ml-auto"></i>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="space-y-4">
+                    <h2 class="text-lg font-semibold text-foreground flex items-center space-x-2">
+                        <i class="fas fa-bolt text-accent"></i>
+                        <span>Quick Actions</span>
+                    </h2>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="p-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">
+                            <i class="fas fa-plus mb-1 block"></i>
+                            Add Plant
+                        </button>
+                        <button class="p-3 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/90 transition-colors text-sm font-medium">
+                            <i class="fas fa-download mb-1 block"></i>
+                            Export Data
+                        </button>
+                        <button class="p-3 bg-muted text-foreground rounded-lg hover:bg-muted/90 transition-colors text-sm font-medium">
+                            <i class="fas fa-calculator mb-1 block"></i>
+                            Calculator
+                        </button>
+                        <button class="p-3 bg-muted text-foreground rounded-lg hover:bg-muted/90 transition-colors text-sm font-medium">
+                            <i class="fas fa-share-alt mb-1 block"></i>
+                            Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- @END_COMPONENT: Sidebar -->
+        
+        <!-- @COMPONENT: MainContent [Map and dashboard panels] -->
+        <main class="flex-1 relative">
+            <!-- Map Container -->
+            <div id="map" class="map-container"></div>
+            
+            <!-- Floating Controls -->
+            <div class="absolute top-4 right-4 z-10 space-y-2">
+                <button id="sidebar-toggle" class="w-10 h-10 bg-card border border-border rounded-lg flex items-center justify-center hover:bg-muted transition-colors shadow-lg">
+                    <i class="fas fa-bars text-foreground"></i>
+                </button>
+                
+                <button class="w-10 h-10 bg-card border border-border rounded-lg flex items-center justify-center hover:bg-muted transition-colors shadow-lg">
+                    <i class="fas fa-expand text-foreground"></i>
+                </button>
+            </div>
+            
+            <!-- Scoring Display -->
+            <div id="score-display" class="absolute top-4 left-4 z-10 bg-card border border-border rounded-lg p-4 shadow-lg hidden">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                        <span id="score-value" class="text-primary-foreground font-bold text-lg">78</span>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-foreground">Site Suitability</h3>
+                        <p id="score-label" class="text-sm score-good">Good Site ✅</p>
+                    </div>
+                </div>
+                <div class="mt-3 space-y-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-muted-foreground">Renewable Access</span>
+                        <span class="text-primary font-medium">85%</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-muted-foreground">Transport Cost</span>
+                        <span class="text-accent font-medium">Low</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-muted-foreground">Demand Proximity</span>
+                        <span class="text-secondary font-medium">High</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Impact Dashboard Panel -->
+            <div id="impact-panel" class="absolute bottom-4 right-4 w-96 bg-card border border-border rounded-lg shadow-lg hidden overflow-hidden">
+                <div class="p-4 border-b border-border">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-semibold text-foreground">Sustainability Impact</h3>
+                        <button id="close-panel" class="text-muted-foreground hover:text-foreground">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <p class="text-sm text-muted-foreground mt-1">Northern Coast Region Plant</p>
+                </div>
+                
+                <div class="p-4 space-y-4">
+                    <!-- CO2 Savings -->
+                    <div class="bg-muted rounded-lg p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-foreground">CO₂ Saved Annually</span>
+                            <i class="fas fa-leaf text-primary"></i>
+                        </div>
+                        <div class="text-2xl font-bold text-primary">50,000</div>
+                        <div class="text-xs text-muted-foreground">tons per year</div>
+                    </div>
+                    
+                    <!-- Industries Supported -->
+                    <div class="bg-muted rounded-lg p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-foreground">Industries Supported</span>
+                            <i class="fas fa-industry text-secondary"></i>
+                        </div>
+                        <div class="text-2xl font-bold text-secondary">12</div>
+                        <div class="text-xs text-muted-foreground">steel, transport, chemical</div>
+                    </div>
+                    
+                    <!-- Renewable Utilization -->
+                    <div class="bg-muted rounded-lg p-3">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-foreground">Renewable Utilization</span>
+                            <i class="fas fa-bolt text-accent"></i>
+                        </div>
+                        <div class="text-2xl font-bold text-accent">89%</div>
+                        <div class="text-xs text-muted-foreground">wind + solar mix</div>
+                    </div>
+                    
+                    <!-- Chart Container -->
+                    <div class="h-48 bg-muted rounded-lg p-3">
+                        <canvas id="impact-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- @END_COMPONENT: MainContent -->
+    </div>
+    
+    <!-- @COMPONENT: Chatbot [AI assistant overlay] -->
+    <div id="chatbot" class="fixed bottom-4 right-4 w-80 h-96 bg-card border border-border rounded-lg shadow-xl hidden overflow-hidden z-50">
+        <div class="p-4 border-b border-border bg-primary text-primary-foreground">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-robot"></i>
+                    <span class="font-medium">InfraVision Assistant</span>
+                </div>
+                <button id="close-chat" class="text-primary-foreground/80 hover:text-primary-foreground">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="chat-messages" class="flex-1 p-4 overflow-y-auto h-72 space-y-3">
+            <!-- Welcome message -->
+            <div class="flex items-start space-x-2">
+                <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-primary-foreground text-xs"></i>
+                </div>
+                <div class="chat-bubble chat-bot rounded-lg px-3 py-2">
+                    <p class="text-sm">Hi! I'm your InfraVision assistant. I can help you find optimal hydrogen plant locations, explain suitability scores, and answer questions about green hydrogen infrastructure. What would you like to know?</p>
+                </div>
+            </div>
+            
+            <!-- Example chat messages -->
+            <div class="flex items-start space-x-2" data-mock="true">
+                <div class="w-6 h-6 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-user text-muted-foreground text-xs"></i>
+                </div>
+                <div class="chat-bubble chat-user rounded-lg px-3 py-2">
+                    <p class="text-sm">What factors make a good hydrogen plant location?</p>
+                </div>
+            </div>
+            
+            <div class="flex items-start space-x-2" data-mock="true">
+                <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-robot text-primary-foreground text-xs"></i>
+                </div>
+                <div class="chat-bubble chat-bot rounded-lg px-3 py-2">
+                    <p class="text-sm">Great question! Key factors include: 1) Proximity to renewable energy sources (wind/solar), 2) Access to water supply, 3) Transport connectivity, 4) Nearby demand centers like steel mills or transport hubs, and 5) Regulatory support. Our AI analyzes all these to give you the best recommendations!</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-4 border-t border-border">
+            <div class="flex space-x-2">
+                <input type="text" placeholder="Ask about hydrogen infrastructure..." class="flex-1 px-3 py-2 bg-input border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent text-sm" />
+                <button class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: Chatbot -->
+    
+    <!-- Authentication Modal -->
+    <!-- @COMPONENT: AuthModal [Login/signup overlay] -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-card rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-leaf text-primary-foreground text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-foreground">Welcome to InfraVision</h2>
+                    <p class="text-muted-foreground mt-2">Sign in to start planning hydrogen infrastructure</p>
+                </div>
+                
+                <form class="space-y-4" data-implementation="Connect to Replit Auth">
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-1">Email</label>
+                        <input type="email" class="w-full px-3 py-2 bg-input border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="your@email.com" />
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-foreground mb-1">Password</label>
+                        <input type="password" class="w-full px-3 py-2 bg-input border border-border rounded-md focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="••••••••" />
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors font-medium">
+                        Sign In
+                    </button>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-muted-foreground">
+                        Don't have an account? 
+                        <a href="#" class="text-primary hover:underline font-medium">Sign up</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: AuthModal -->
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        (function() {
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            themeToggle.addEventListener('click', () => {
+                html.classList.toggle('dark');
+                localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+            });
+            
+            // Load saved theme
+            if (localStorage.getItem('theme') === 'dark') {
+                html.classList.add('dark');
+            }
+            
+            // Sidebar toggle
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+            
+            // Chatbot toggle
+            const chatToggle = document.getElementById('chat-toggle');
+            const chatbot = document.getElementById('chatbot');
+            const closeChat = document.getElementById('close-chat');
+            
+            chatToggle.addEventListener('click', () => {
+                chatbot.classList.toggle('hidden');
+            });
+            
+            closeChat.addEventListener('click', () => {
+                chatbot.classList.add('hidden');
+            });
+            
+            // Impact panel toggle
+            const closePanel = document.getElementById('close-panel');
+            const impactPanel = document.getElementById('impact-panel');
+            
+            closePanel.addEventListener('click', () => {
+                impactPanel.classList.add('hidden');
+            });
+            
+            // Initialize map
+            const map = L.map('map').setView([51.505, -0.09], 8);
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            // AI suggested sites with glow effect
+            const aiSites = [
+                { lat: 51.6, lng: -0.2, name: "Northern Coast Region", score: 92 },
+                { lat: 51.4, lng: -0.1, name: "Industrial Valley", score: 88 },
+                { lat: 51.5, lng: 0.1, name: "Eastern Highlands", score: 84 }
+            ];
+            
+            // Add AI suggested sites
+            aiSites.forEach(site => {
+                const marker = L.marker([site.lat, site.lng], {
+                    icon: L.divIcon({
+                        className: 'ai-glow',
+                        html: `<div style="background: hsl(158 64% 52%); width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 15px hsl(158 64% 52%);"></div>`,
+                        iconSize: [20, 20]
+                    })
+                }).addTo(map);
+                
+                marker.bindPopup(`
+                    <div class="p-2">
+                        <h3 class="font-semibold">${site.name}</h3>
+                        <p class="text-sm text-gray-600">AI Suggested Site</p>
+                        <p class="text-sm"><strong>Score: ${site.score}/100</strong></p>
+                    </div>
+                `);
+                
+                marker.on('click', () => {
+                    impactPanel.classList.remove('hidden');
+                    // TODO: Update impact panel with site-specific data
+                });
+            });
+            
+            // Existing hydrogen plants
+            const existingPlants = [
+                { lat: 51.3, lng: -0.3, name: "London Hydrogen Hub" },
+                { lat: 51.7, lng: 0.2, name: "Thames Estuary Plant" }
+            ];
+            
+            existingPlants.forEach(plant => {
+                L.marker([plant.lat, plant.lng], {
+                    icon: L.divIcon({
+                        html: '<i class="fas fa-industry" style="color: #0ea5e9; font-size: 16px;"></i>',
+                        iconSize: [16, 16],
+                        className: 'existing-plant-marker'
+                    })
+                }).addTo(map).bindPopup(`<strong>${plant.name}</strong><br/>Existing Facility`);
+            });
+            
+            // Renewable energy sources
+            const renewableSites = [
+                { lat: 51.8, lng: -0.4, type: "wind", name: "Offshore Wind Farm" },
+                { lat: 51.2, lng: 0.3, type: "solar", name: "Solar Installation" },
+                { lat: 51.6, lng: 0.0, type: "wind", name: "Onshore Wind" }
+            ];
+            
+            renewableSites.forEach(site => {
+                const icon = site.type === 'wind' ? 'fa-wind' : 'fa-sun';
+                const color = site.type === 'wind' ? '#10b981' : '#f59e0b';
+                
+                L.marker([site.lat, site.lng], {
+                    icon: L.divIcon({
+                        html: `<i class="fas ${icon}" style="color: ${color}; font-size: 14px;"></i>`,
+                        iconSize: [14, 14],
+                        className: 'renewable-marker'
+                    })
+                }).addTo(map).bindPopup(`<strong>${site.name}</strong><br/>${site.type === 'wind' ? 'Wind' : 'Solar'} Energy`);
+            });
+            
+            // Draggable hydrogen plant marker functionality
+            let dragMarker = null;
+            let isDragging = false;
+            
+            // Create draggable marker on map click
+            map.on('click', function(e) {
+                if (!isDragging) {
+                    // Remove existing drag marker
+                    if (dragMarker) {
+                        map.removeLayer(dragMarker);
+                    }
+                    
+                    // Create new draggable marker
+                    dragMarker = L.marker([e.latlng.lat, e.latlng.lng], {
+                        draggable: true,
+                        icon: L.divIcon({
+                            html: '<div style="background: hsl(158 64% 52%); width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;"><i class="fas fa-industry" style="color: white; font-size: 10px;"></i></div>',
+                            iconSize: [24, 24],
+                            className: 'hydrogen-plant-marker'
+                        })
+                    }).addTo(map);
+                    
+                    // Calculate and show suitability score
+                    calculateSuitabilityScore(e.latlng);
+                    
+                    dragMarker.on('dragstart', function() {
+                        isDragging = true;
+                    });
+                    
+                    dragMarker.on('dragend', function(e) {
+                        isDragging = false;
+                        calculateSuitabilityScore(e.target.getLatLng());
+                    });
+                    
+                    dragMarker.on('click', function() {
+                        impactPanel.classList.remove('hidden');
+                        // TODO: Update impact panel with calculated data
+                    });
+                }
+            });
+            
+            // Suitability score calculation
+            function calculateSuitabilityScore(latlng) {
+                // Simple mock calculation based on proximity to renewables
+                let score = 50; // Base score
+                
+                // Check proximity to renewable sources
+                renewableSites.forEach(site => {
+                    const distance = map.distance(latlng, [site.lat, site.lng]);
+                    if (distance < 50000) { // Within 50km
+                        score += 15;
+                    } else if (distance < 100000) { // Within 100km
+                        score += 8;
+                    }
+                });
+                
+                // Check proximity to existing plants (slight penalty for competition)
+                existingPlants.forEach(plant => {
+                    const distance = map.distance(latlng, [plant.lat, plant.lng]);
+                    if (distance < 30000) { // Too close
+                        score -= 10;
+                    }
+                });
+                
+                // Random factors for demo
+                score += Math.floor(Math.random() * 20) - 10;
+                score = Math.max(0, Math.min(100, score));
+                
+                // Update score display
+                updateScoreDisplay(score);
+            }
+            
+            function updateScoreDisplay(score) {
+                const scoreDisplay = document.getElementById('score-display');
+                const scoreValue = document.getElementById('score-value');
+                const scoreLabel = document.getElementById('score-label');
+                
+                scoreValue.textContent = score;
+                
+                if (score >= 80) {
+                    scoreLabel.textContent = 'Excellent Site 🌟';
+                    scoreLabel.className = 'text-sm score-excellent';
+                } else if (score >= 60) {
+                    scoreLabel.textContent = 'Good Site ✅';
+                    scoreLabel.className = 'text-sm score-good';
+                } else {
+                    scoreLabel.textContent = 'Poor Site ❌';
+                    scoreLabel.className = 'text-sm score-poor';
+                }
+                
+                scoreDisplay.classList.remove('hidden');
+            }
+            
+            // Initialize impact chart
+            const ctx = document.getElementById('impact-chart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Wind Energy', 'Solar Energy', 'Grid Power'],
+                        datasets: [{
+                            data: [65, 24, 11],
+                            backgroundColor: [
+                                'hsl(158 64% 52%)',
+                                'hsl(48 96% 53%)',
+                                'hsl(240 5.9% 90%)'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    boxWidth: 6,
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // TODO: Implement authentication with Replit Auth
+            // TODO: Implement chatbot functionality with OpenAI integration
+            // TODO: Add more sophisticated AI site recommendation algorithm
+            // TODO: Implement data export functionality
+            // TODO: Add more interactive map layers and filters
+            
+        })();
+    </script>
+</body>
+</html>

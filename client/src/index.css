@@ -1,0 +1,413 @@
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light theme colors matching design reference */
+  --background: hsl(0 0% 98%);
+  --foreground: hsl(240 10% 3.9%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(240 10% 3.9%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(240 10% 3.9%);
+  --primary: hsl(158 64% 52%);
+  --primary-foreground: hsl(0 0% 98%);
+  --secondary: hsl(199 89% 48%);
+  --secondary-foreground: hsl(0 0% 98%);
+  --muted: hsl(240 4.8% 95.9%);
+  --muted-foreground: hsl(240 3.8% 46.1%);
+  --accent: hsl(48 96% 53%);
+  --accent-foreground: hsl(240 5.9% 10%);
+  --destructive: hsl(0 84% 60%);
+  --destructive-foreground: hsl(0 0% 98%);
+  --border: hsl(240 5.9% 90%);
+  --input: hsl(240 5.9% 90%);
+  --ring: hsl(158 64% 52%);
+  --chart-1: hsl(158 64% 52%);
+  --chart-2: hsl(48 96% 53%);
+  --chart-3: hsl(199 89% 48%);
+  --chart-4: hsl(142 76% 36%);
+  --chart-5: hsl(341 75% 51%);
+  --sidebar: hsl(0 0% 100%);
+  --sidebar-foreground: hsl(240 10% 3.9%);
+  --sidebar-primary: hsl(158 64% 52%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(158 64% 52%);
+  --sidebar-border: hsl(240 5.9% 90%);
+  --sidebar-ring: hsl(158 64% 52%);
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, monospace;
+  --radius: 0.5rem;
+  --shadow-2xs: 0px 2px 0px 0px hsl(158 64% 52% / 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(158 64% 52% / 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(158 64% 52% / 0.00), 0px 1px 2px -1px hsl(158 64% 52% / 0.00);
+  --shadow: 0px 2px 0px 0px hsl(158 64% 52% / 0.00), 0px 1px 2px -1px hsl(158 64% 52% / 0.00);
+  --shadow-md: 0px 2px 0px 0px hsl(158 64% 52% / 0.00), 0px 2px 4px -1px hsl(158 64% 52% / 0.00);
+  --shadow-lg: 0px 2px 0px 0px hsl(158 64% 52% / 0.00), 0px 4px 6px -1px hsl(158 64% 52% / 0.00);
+  --shadow-xl: 0px 2px 0px 0px hsl(158 64% 52% / 0.00), 0px 8px 10px -1px hsl(158 64% 52% / 0.00);
+  --shadow-2xl: 0px 2px 0px 0px hsl(158 64% 52% / 0.00);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+.dark {
+  /* Dark theme colors matching design reference */
+  --background: hsl(222 84% 4.9%);
+  --foreground: hsl(210 40% 98%);
+  --card: hsl(222 84% 4.9%);
+  --card-foreground: hsl(210 40% 98%);
+  --popover: hsl(222 84% 4.9%);
+  --popover-foreground: hsl(210 40% 98%);
+  --primary: hsl(158 64% 52%);
+  --primary-foreground: hsl(222 84% 4.9%);
+  --secondary: hsl(217 32% 17%);
+  --secondary-foreground: hsl(210 40% 98%);
+  --muted: hsl(217 32% 17%);
+  --muted-foreground: hsl(215 20.2% 65.1%);
+  --accent: hsl(48 96% 53%);
+  --accent-foreground: hsl(222 84% 4.9%);
+  --destructive: hsl(0 62% 30%);
+  --destructive-foreground: hsl(210 40% 98%);
+  --border: hsl(217 32% 17%);
+  --input: hsl(217 32% 17%);
+  --ring: hsl(158 64% 52%);
+  --chart-1: hsl(158 64% 52%);
+  --chart-2: hsl(48 96% 53%);
+  --chart-3: hsl(199 89% 48%);
+  --chart-4: hsl(142 76% 36%);
+  --chart-5: hsl(341 75% 51%);
+  --sidebar: hsl(222 84% 4.9%);
+  --sidebar-foreground: hsl(210 40% 98%);
+  --sidebar-primary: hsl(158 64% 52%);
+  --sidebar-primary-foreground: hsl(222 84% 4.9%);
+  --sidebar-accent: hsl(217 32% 17%);
+  --sidebar-accent-foreground: hsl(158 64% 52%);
+  --sidebar-border: hsl(217 32% 17%);
+  --sidebar-ring: hsl(158 64% 52%);
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, monospace;
+  --radius: 0.5rem;
+  --shadow-2xs: 0px 2px 0px 0px hsl(158 64% 52% / 0.00);
+  --shadow-xs: 0px 2px 0px 0px hsl(158 64% 52% / 0.00);
+  --shadow-sm: 0px 2px 0px 0px hsl(158 64% 52% / 0.00), 0px 1px 2px -1px hsl(158 64% 52% / 0.00);
+  --shadow: 0px 2px 0px 0px hsl(158 64% 52% / 0.00), 0px 1px 2px -1px hsl(158 64% 52% / 0.00);
+  --shadow-md: 0px 2px 0px 0px hsl(158 64% 52% / 0.00), 0px 2px 4px -1px hsl(158 64% 52% / 0.00);
+  --shadow-lg: 0px 2px 0px 0px hsl(158 64% 52% / 0.00), 0px 4px 6px -1px hsl(158 64% 52% / 0.00);
+  --shadow-xl: 0px 2px 0px 0px hsl(158 64% 52% / 0.00), 0px 8px 10px -1px hsl(158 64% 52% / 0.00);
+  --shadow-2xl: 0px 2px 0px 0px hsl(158 64% 52% / 0.00);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+}
+
+/* Leaflet map container styles */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  font-family: var(--font-sans);
+  z-index: 1 !important;
+}
+
+/* Ensure map pane stays behind UI elements */
+.leaflet-map-pane {
+  z-index: 1 !important;
+}
+
+/* Leaflet controls should be above map but below UI */
+.leaflet-control-container {
+  z-index: 100 !important;
+}
+
+/* Popups should be above map but below main UI */
+.leaflet-popup {
+  z-index: 600 !important;
+}
+
+/* Tooltips should be above popups */
+.leaflet-tooltip {
+  z-index: 650 !important;
+}
+
+/* AI glow animation for suggested sites */
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: scale(1.1);
+  }
+}
+
+.ai-glow-marker {
+  animation: pulse 2s infinite;
+}
+
+/* Score color classes */
+.score-excellent { 
+  color: hsl(142 76% 36%); 
+}
+
+.score-good { 
+  color: hsl(48 96% 53%); 
+}
+
+.score-poor { 
+  color: hsl(0 84% 60%); 
+}
+
+/* Sidebar transition */
+.sidebar-transition {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Chat bubble styles */
+.chat-bubble {
+  max-width: 80%;
+}
+
+/* Custom marker styles */
+.hydrogen-plant-marker,
+.renewable-marker,
+.demand-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Map controls styling */
+.leaflet-control-zoom {
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: var(--radius) !important;
+  z-index: 100 !important;
+}
+
+/* Enhanced Map Drag and Drop Styles */
+.drag-marker-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.drag-marker-container:active {
+  cursor: grabbing;
+}
+
+.drag-marker-pulse {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: hsl(158 64% 52% / 0.3);
+  animation: markerPulse 2s infinite;
+}
+
+.drag-marker-core {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: hsl(158 64% 52%);
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.drag-marker-core:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+@keyframes markerPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+/* Indian Map Theme */
+.leaflet-control-layers {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+.renewable-marker {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.demand-marker {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+/* Enhanced Auth Component Dark Mode Styling */
+.auth-container {
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: var(--radius) !important;
+}
+
+.auth-label-dark {
+  color: hsl(210 40% 98%) !important;
+  font-weight: 500 !important;
+}
+
+.auth-label-light {
+  color: hsl(222 84% 4.9%) !important;
+  font-weight: 500 !important;
+}
+
+.auth-message-dark {
+  color: hsl(210 40% 98%) !important;
+}
+
+.auth-message-light {
+  color: hsl(222 84% 4.9%) !important;
+}
+
+.auth-button {
+  border-radius: var(--radius) !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+}
+
+.auth-input {
+  border-radius: var(--radius) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  font-weight: 400 !important;
+}
+
+/* Override Supabase Auth UI default styles for better dark mode */
+.supabase-auth-ui_ui-container .supabase-auth-ui_ui-label {
+  color: hsl(var(--foreground)) !important;
+}
+
+.supabase-auth-ui_ui-container .supabase-auth-ui_ui-message {
+  color: hsl(var(--foreground)) !important;
+}
+
+.supabase-auth-ui_ui-container .supabase-auth-ui_ui-input {
+  background-color: hsl(var(--input)) !important;
+  border-color: hsl(var(--border)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.supabase-auth-ui_ui-container .supabase-auth-ui_ui-input::placeholder {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.leaflet-control-zoom a {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--foreground)) !important;
+  border: none !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: hsl(var(--muted)) !important;
+}
+
+/* Popup styling with proper z-index */
+.leaflet-popup-pane {
+  z-index: 1000 !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--foreground)) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+  z-index: 1001 !important;
+}
+
+.leaflet-popup-tip {
+  background-color: hsl(var(--card)) !important;
+  z-index: 1001 !important;
+}
+
+/* Tooltip and marker z-index fixes */
+.leaflet-tooltip-pane {
+  z-index: 1002 !important;
+}
+
+.leaflet-marker-pane {
+  z-index: 600 !important;
+}
+
+.leaflet-overlay-pane {
+  z-index: 400 !important;
+}
+
+/* Ensure drag markers appear on top */
+.hydrogen-plant-marker {
+  z-index: 1000 !important;
+  position: relative !important;
+}
+
+/* Chart container styling */
+canvas {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+/* Focus and accessibility improvements */
+button:focus-visible,
+input:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Ensure proper contrast for interactive elements */
+button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Loading states */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom scrollbar for dark/light themes */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--foreground));
+}
