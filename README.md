@@ -1,131 +1,153 @@
 # 🌍 Green Hydrogen InfraVision
 
-**Play, Plan, and Prove Impact**
+*Play, Plan, and Prove Impact*
 
-An interactive web platform for **Green Hydrogen Infrastructure Mapping and Optimization**, built for hackathons and real-world scalability. The tool helps **urban planners, energy companies, developers, and policymakers** make smarter, impact-driven decisions about hydrogen infrastructure.
+**Website Link:** [Green Hydrogen InfraVision](#)  
+
+---
+
+## 🔹 Project Description
+
+**Problem:**  
+Planning and expanding green hydrogen infrastructure is complex. Urban planners, energy companies, and policymakers often lack interactive tools that combine mapping, AI insights, and impact analysis for optimal decision-making.
+
+**Our Solution:**  
+**Green Hydrogen InfraVision** is an interactive, gamified, AI-powered platform for **mapping, optimizing, and analyzing green hydrogen infrastructure**. Users can explore existing and planned hydrogen assets, experiment with site placement, and visualize sustainability impacts in real-time.
 
 ---
 
 ## 📸 Preview
 
-
-
----
-📊 Data Flow Diagram (DFD)
-
-<img width="1074" height="959" alt="hackethon drawio" src="https://github.com/user-attachments/assets/9183fdba-060c-468b-8003-873c96d4544d" />
+<img width="600" alt="Screenshot" src="Screenshot 2025-08-30 155753.png" />  
+<img width="600" alt="Main" src="Main img.png" />  
+<img width="600" alt="Score" src="Score img.png" />  
 
 ---
 
-## 🚀 Project Overview
+## 🛠 Key Features
 
-Identifying where to grow the hydrogen ecosystem requires more than just maps. This project offers a **gamified, AI-powered, and impact-driven** platform that:
+### 🌐 Interactive Map
+* OpenStreetMap integration with multiple layers:
+  - Street Map, Satellite, Terrain, Dark Mode
+  - Existing H₂ Plants
+  - Renewable Sources
+  - Demand Centers
+  - Pipeline Network
+  - Regulatory Zones
+  - AI Suggested Sites
+* Drag & drop site markers
+* Real-time **Site Assessment & Suitability Analysis**
 
-* Visualizes **existing and planned assets** (plants, pipelines, storage, renewable hubs).
-* Uses **AI models** to suggest optimal new site locations.
-* Lets users **play with site placement** and see real-time suitability scores.
-* Displays a **sustainability impact dashboard** with climate and economic metrics.
+### 🎮 Gamified Optimization
+* AI-suggested site highlights
+* Left panel with **AI suggestion plans**
+* Click to jump to suggested location
+* Scoring for site suitability and sustainability impact
 
----
+### 🤖 AI Assistant
+* Powered by **Gemini API**
+* Provides insights, recommendations, and interactive help
 
-## ✨ Key Features
+### 📊 Dashboard & Analysis
+* Plants Dashboard with metrics
+* Suitability & impact analysis charts
+* CO₂ saved, industries supported, renewable utilization
+* Export images & share button for quick access
 
-### 🎮 1. Gamified Optimization
-
-* Drag & drop hydrogen plant markers on the map.
-* Get instant **suitability scores** (based on renewables, pipelines, demand hubs).
-* Judges and users can interact in real-time → fun + insightful.
-
-### 🤖 2. AI-Assisted Site Suggestion
-
-* AI model (Decision Tree / Random Forest with mock data).
-* Pre-computed **"best site" highlights** glow on the map.
-* AI suggests top 3 regions → futuristic + data-driven planning.
-
-### 📊 3. Sustainability Impact Dashboard
-
-* Every site (AI-suggested or user-placed) shows:
-
-  * **CO₂ saved (tons/year)** 🌱
-  * **Industries Supported (#)** 🏭
-  * **% Renewable Utilization** ☀️💨
-* Visualized with interactive charts & stats → easy to pitch impact.
+### 🌙 Other Features
+* Dark/Light mode toggle
+* Authentication & user management via **Supabase**
+* Help form for support
+* About page explaining the project
 
 ---
 
 ## 🎯 Demo Flow
 
-1. Open Map → Explore hydrogen assets & renewable hubs.
-2. See AI Glow → Top 3 AI-suggested sites appear.
-3. Drag & Drop → Place your own plant & get suitability score.
-4. Dashboard → View CO₂ savings, industries supported, and renewables usage.
-5. Pitch → Showcase how the platform drives **net-zero growth**.
-
----
-
-## ⚡ Why It Stands Out
-
-* Others: static maps with markers.
-* **InfraVision:** interactive + gamified + AI-powered + measurable climate impact.
-* Judges can **try it live** → immediate wow factor.
-* Feels like a **decision-support product**, not just a prototype.
-
----
-
-## 🛠 Tech Stack
-
-**Frontend**: React + Leaflet.js / Mapbox + TailwindCSS
-**Authentication**: Clerk
-**Database**: Supabase
-**Backend**: Node.js / Flask / FastAPI (for AI + optimization engine)
-**Map Visualization**: OpenStreetMap (OSM)
-**AI Model**: Python (scikit-learn, Decision Tree / Random Forest)
-**Dashboard**: Chart.js / Recharts
-**Chatbot Assistant**: Botpress
-**Deployment**: Vercel (frontend), Render/Heroku (backend)
+1. Open the map → explore hydrogen assets & renewable hubs.
+2. See AI-suggested sites → top recommendations glow.
+3. Drag & drop your own plant → get suitability score & analysis.
+4. Open the dashboard → view CO₂ savings, industries supported, renewables usage.
+5. Export & share → quick access for presentations and reports.
 
 ---
 
 ## 👥 Users
 
-* Urban & regional planners 🏙️
-* Energy companies ⚡
-* Project developers 🏗️
-* Policy analysts 📑
+* Urban & Regional Planners 🏙  
+* Energy Companies ⚡  
+* Project Developers 🏗  
+* Policy Analysts 📑  
 
 ---
 
 ## 🌱 Impact
 
-* **Capital Efficiency** → directs investments to high-impact projects.
-* **Avoids Redundancy** → prevents overlapping infrastructure.
-* **Supports Net-Zero Goals** → measurable CO₂ savings.
-* **Drives Coordination** → enables ecosystem-wide growth.
+* **Capital Efficiency** → directs investments to high-impact projects  
+* **Avoids Redundancy** → prevents overlapping infrastructure  
+* **Supports Net-Zero Goals** → measurable CO₂ savings  
+* **Drives Coordination** → enables ecosystem-wide growth  
+
+---
+
+## 🧰 Tech Stack
+
+### Frontend
+* React + TypeScript  
+* TailwindCSS  
+* Leaflet.js Maps  
+
+### Backend
+* Node.js + Express  
+* PostgreSQL  
+* Supabase  
+* Gemini API  
+
+### Authentication & Map
+* Supabase Auth  
+* Leaflet.js Maps  
+* OpenStreetMap (OSM)  
+
+---
+
+## 🖥 Navbar & Pages
+
+* **Dashboard** → Main map, AI suggestions, plants dashboard, drag & drop, site assessment  
+* **About** → Project description, team, impact  
+* **Help** → Support form  
+
+---
+
+## 👥 Team NPHard
+
+* **Leader:** Patel Priyank  
+* Patel Yug  
+* Patel Prince  
+* Maalav Patadiya  
 
 ---
 
 ## 📌 Next Steps
 
-* Expand dataset → real-world renewable & hydrogen infra.
-* Enhance AI → integrate geospatial ML models.
-* Advanced gamification → scoring leaderboard for site selection.
-* Public API → enable external tools & researchers.
+* Expand dataset → integrate real-world renewable & hydrogen infrastructure data  
+* Enhance AI → geospatial ML models for smarter site selection  
+* Advanced gamification → scoring leaderboard  
+* Public API → enable external tools & researchers  
 
 ---
 
 ## 💡 Inspiration
 
-This project was built during a hackathon to **merge energy planning, AI, and gamification** into one engaging platform. It’s not just a prototype—it’s a **vision of the future hydrogen economy.**
-
----
-
-## 🤝 Contributors
-
-* **Your Name (Yug Patel)** – Frontend + Project Lead
-* (Add teammates if any)
+Built during a hackathon, **InfraVision** merges energy planning, AI, and gamification into an **engaging, decision-support platform**. It is designed to be more than a prototype—a **vision for the future hydrogen economy**.  
 
 ---
 
 ## 📄 License
 
 MIT License – free to use, modify, and distribute.
+
+---
+
+## 🙏 Thank You
+
+Thank you for exploring **Green Hydrogen InfraVision**. Together, let's accelerate the green hydrogen revolution!  
