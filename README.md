@@ -7,13 +7,15 @@ An interactive web platform for **Green Hydrogen Infrastructure Mapping and Opti
 ---
 
 ## 📸 Preview
-
+<img width="600" alt="Screenshot 2025-08-30 155753.png" src="https://github.com/user-attachments/assets/9183fdba-060c-468b-8003-873c96d4544d" />
+<img width="600"  alt="Main img.png" src="https://github.com/user-attachments/assets/9183fdba-060c-468b-8003-873c96d4544d" />
+<img width="600"  alt="Score img.png" src="https://github.com/user-attachments/assets/9183fdba-060c-468b-8003-873c96d4544d" />
 
 
 ---
 📊 Data Flow Diagram (DFD)
 
-<img width="1074" height="959" alt="hackethon drawio" src="https://github.com/user-attachments/assets/9183fdba-060c-468b-8003-873c96d4544d" />
+<img width="1074" height="959" alt="hackethon.drawio" src="https://github.com/user-attachments/assets/9183fdba-060c-468b-8003-873c96d4544d" />
 
 ---
 
