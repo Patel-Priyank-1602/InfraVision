@@ -2,11 +2,6 @@
 
 *Play, Plan, and Prove Impact*
 
-**Visit Site:** <a href="https://31de1aba-1185-478a-831e-7860240ccbf2-00-2ah4u2awldhz3.pike.replit.dev/" target="_blank" rel="noopener noreferrer">
-  Green Hydrogen InfraVision
-</a>
-
-
 ---
 
 ## 🔹 Project Description
