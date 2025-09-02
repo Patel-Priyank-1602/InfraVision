@@ -7,28 +7,27 @@ const app = express();
 // CORS configuration for production
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  
-  // Allow requests from Vercel deployments and localhost for development
-  if (origin && (
-    origin.includes('.vercel.app') || 
-    origin.includes('localhost') || 
-    origin.includes('127.0.0.1') ||
-    origin.includes('.replit.dev') ||
-    origin.includes('.replit.app')
-  )) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
+
+  if (
+    origin &&
+    (origin.includes(".vercel.app") ||
+      origin.includes("localhost") ||
+      origin.includes("127.0.0.1") ||
+      origin.includes(".replit.dev") ||
+      origin.includes(".replit.app"))
+  ) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
   }
-  
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
+
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
     res.status(200).end();
     return;
   }
-  
+
   next();
 });
 
@@ -78,12 +77,15 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Setup initial data on startup if needed
   try {
-    const { setupInitialData } = await import('./setup-data');
+    const { setupInitialData } = await import("./setup-data");
     await setupInitialData();
-  } catch (error) {
-    console.log('Initial data setup skipped or failed:', error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.log("Initial data setup skipped or failed:", error.message);
+    } else {
+      console.log("Initial data setup skipped or failed:", String(error));
+    }
   }
 
   const server = await registerRoutes(app);
@@ -96,37 +98,32 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // Add a health check endpoint with database test
-  app.get('/health', async (req, res) => {
+  app.get("/health", async (req, res) => {
     try {
-      // Test database connection by trying to get the count of users
-      const { storage } = await import('./storage');
-      const testUser = await storage.getUser('demo-user');
-      res.json({ 
-        message: "API server running", 
-        status: "ok", 
+      const { storage } = await import("./storage");
+      const testUser = await storage.getUser("demo-user");
+      res.json({
+        message: "API server running",
+        status: "ok",
         database: testUser ? "connected" : "no demo user",
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-    } catch (error) {
-      res.status(500).json({ 
-        message: "Database error", 
+    } catch (error: unknown) {
+      res.status(500).json({
+        message: "Database error",
         status: "error",
-        error: error.message,
-        timestamp: new Date().toISOString()
+        error: error instanceof Error ? error.message : String(error),
+        timestamp: new Date().toISOString(),
       });
     }
   });
 
-  // Production static file serving (no Vite)
   if (process.env.NODE_ENV === "production") {
-    // Serve static files if they exist
     const staticPath = path.resolve(process.cwd(), "dist/public");
     app.use(express.static(staticPath));
-    
-    // Catch-all handler for SPA routing - only for non-API routes
+
     app.get("*", (req, res) => {
-      if (req.path.startsWith('/api/')) {
+      if (req.path.startsWith("/api/")) {
         res.status(404).json({ message: "API endpoint not found" });
       } else {
         res.json({ message: "API server running", status: "ok" });
@@ -134,14 +131,15 @@ app.use((req, res, next) => {
     });
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
+  const port = parseInt(process.env.PORT || "5000", 10);
+  server.listen(
+    {
+      port,
+      host: "0.0.0.0",
+      reusePort: true,
+    },
+    () => {
+      log(`serving on port ${port}`);
+    }
+  );
 })();
