@@ -78,6 +78,14 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Setup initial data on startup if needed
+  try {
+    const { setupInitialData } = await import('./setup-data');
+    await setupInitialData();
+  } catch (error) {
+    console.log('Initial data setup skipped or failed:', error.message);
+  }
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -88,15 +96,41 @@ app.use((req, res, next) => {
     throw err;
   });
 
+  // Add a health check endpoint with database test
+  app.get('/health', async (req, res) => {
+    try {
+      // Test database connection by trying to get the count of users
+      const { storage } = await import('./storage');
+      const testUser = await storage.getUser('demo-user');
+      res.json({ 
+        message: "API server running", 
+        status: "ok", 
+        database: testUser ? "connected" : "no demo user",
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Database error", 
+        status: "error",
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
   // Production static file serving (no Vite)
   if (process.env.NODE_ENV === "production") {
     // Serve static files if they exist
     const staticPath = path.resolve(process.cwd(), "dist/public");
     app.use(express.static(staticPath));
     
-    // Catch-all handler for SPA routing
+    // Catch-all handler for SPA routing - only for non-API routes
     app.get("*", (req, res) => {
-      res.json({ message: "API server running", status: "ok" });
+      if (req.path.startsWith('/api/')) {
+        res.status(404).json({ message: "API endpoint not found" });
+      } else {
+        res.json({ message: "API server running", status: "ok" });
+      }
     });
   }
 
