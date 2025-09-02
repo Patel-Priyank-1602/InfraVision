@@ -3,6 +3,35 @@ import { registerRoutes } from "./routes";
 import path from "path";
 
 const app = express();
+
+// CORS configuration for production
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  
+  // Allow requests from Vercel deployments and localhost for development
+  if (origin && (
+    origin.includes('.vercel.app') || 
+    origin.includes('localhost') || 
+    origin.includes('127.0.0.1') ||
+    origin.includes('.replit.dev') ||
+    origin.includes('.replit.app')
+  )) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
