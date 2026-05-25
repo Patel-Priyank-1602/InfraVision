@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import Calculator from "@/pages/Calculator";
 import About from "@/pages/About";
 import NotFound from "@/pages/not-found";
+import Chatbot from "@/components/Chatbot";
 
 function Router() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
+          <Chatbot />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>

@@ -70,8 +70,8 @@ export default function ImpactPanel({ site, onClose }: ImpactPanelProps) {
   }, [site]);
 
   return (
-    <Card className="absolute bottom-4 right-4 w-96 bg-card border border-border shadow-lg overflow-hidden z-[1000]">
-      <CardHeader className="pb-3 border-b border-border">
+    <Card className="absolute bottom-4 right-4 w-[calc(100vw-2rem)] sm:w-96 max-h-[85vh] overflow-y-auto bg-card border border-border shadow-lg z-[1000]">
+      <CardHeader className="pb-3 border-b border-border sticky top-0 bg-card z-10">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-semibold text-foreground">Sustainability Impact</h3>

@@ -33,35 +33,38 @@ export default function Header({ onDashboardToggle }: HeaderProps) {
           </div>
           
           {/* Navigation */}
-          <div className="flex items-center space-x-4">
-            <nav className="hidden md:flex items-center space-x-6">
+          <div className="flex items-center space-x-1 md:space-x-4">
+            <nav className="flex items-center space-x-2 md:space-x-6">
               {onDashboardToggle && (
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="gap-2"
+                  className="gap-2 px-2 md:px-4"
                   onClick={onDashboardToggle}
                   data-testid="button-dashboard-nav"
                 >
                   <BarChart3 className="w-4 h-4" />
-                  Dashboard
+                  <span className="hidden md:inline">Dashboard</span>
                 </Button>
               )}
               
               <Link href="/about">
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-2 px-2 md:px-4">
                   <Info className="w-4 h-4" />
-                  About
+                  <span className="hidden md:inline">About</span>
                 </Button>
               </Link>
 
-              <button 
+              <Button 
+                variant="ghost"
+                size="sm"
                 onClick={handleHelpClick}
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="gap-2 px-2 md:px-4 text-muted-foreground hover:text-primary transition-colors"
                 data-testid="button-help-nav"
               >
-                Help
-              </button>
+                <HelpCircle className="w-4 h-4 md:hidden" />
+                <span className="hidden md:inline">Help</span>
+              </Button>
             </nav>
           </div>
           

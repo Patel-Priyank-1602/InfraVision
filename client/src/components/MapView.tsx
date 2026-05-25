@@ -579,32 +579,6 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
         )}
       </div>
 
-      {/* Export and Share Controls */}
-      <div className="absolute bottom-4 right-4 z-[1000] space-y-2">
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={handleExportPDF}
-          disabled={isExporting}
-          className="bg-card border border-border shadow-lg hover:bg-muted gap-2"
-          data-testid="button-export-pdf"
-        >
-          <Download className="w-4 h-4" />
-          {isExporting ? "Exporting..." : "Export Image"}
-        </Button>
-        
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={handleShareMap}
-          className="bg-card border border-border shadow-lg hover:bg-muted gap-2"
-          data-testid="button-share-map"
-        >
-          <Share2 className="w-4 h-4" />
-          Share
-        </Button>
-      </div>
-
       {/* Enhanced Instructions with Indian Context */}
       <div className="absolute bottom-4 left-4 z-[999] bg-card border border-border rounded-lg p-3 md:p-4 shadow-lg max-w-xs md:max-w-sm hidden lg:block">
         <div className="space-y-2">
@@ -629,9 +603,35 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
         </div>
       </div>
 
-      {/* Analytics Toggle Button (when panel is hidden) */}
-      {!showAnalytics && currentAnalysis && (
-        <div className="absolute bottom-4 right-4 z-[1000]">
+      {/* Grouped Bottom Right Controls */}
+      <div className="absolute bottom-4 right-4 z-[1000] flex flex-col items-end gap-2">
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleExportPDF}
+            disabled={isExporting}
+            className="bg-card border border-border shadow-lg hover:bg-muted gap-2"
+            data-testid="button-export-pdf"
+          >
+            <Download className="w-4 h-4" />
+            <span className="hidden sm:inline">{isExporting ? "Exporting..." : "Export Image"}</span>
+          </Button>
+          
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleShareMap}
+            className="bg-card border border-border shadow-lg hover:bg-muted gap-2"
+            data-testid="button-share-map"
+          >
+            <Share2 className="w-4 h-4" />
+            <span className="hidden sm:inline">Share</span>
+          </Button>
+        </div>
+
+        {/* Analytics Toggle Button (when panel is hidden) */}
+        {!showAnalytics && currentAnalysis && (
           <Button
             size="sm"
             variant="outline"
@@ -644,8 +644,8 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
               {currentAnalysis.suitabilityScore}
             </div>
           </Button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

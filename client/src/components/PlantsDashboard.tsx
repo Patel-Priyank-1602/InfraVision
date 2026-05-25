@@ -55,7 +55,7 @@ export default function PlantsDashboard({ onClose }: PlantsDashboardProps) {
   const totalIndustries = allSites.reduce((sum, site) => sum + (site.industriesSupported || 0), 0);
 
   return (
-    <Card className="absolute top-4 right-4 z-[1000] w-[90vw] max-w-[600px] h-[85vh] max-h-[700px] bg-gradient-to-br from-card via-card to-muted/30 border-2 border-primary/20 shadow-2xl overflow-hidden backdrop-blur-sm">
+    <Card className="absolute top-4 right-4 left-4 md:left-auto z-[1050] md:w-[600px] h-[85vh] max-h-[700px] bg-gradient-to-br from-card via-card to-muted/30 border-2 border-primary/20 shadow-2xl overflow-hidden backdrop-blur-sm">
       <CardHeader className="pb-4 border-b border-border/50 bg-gradient-to-r from-primary/5 to-secondary/5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

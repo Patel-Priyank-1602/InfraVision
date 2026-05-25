@@ -85,8 +85,8 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
   ];
 
   return (
-    <div className="fixed inset-y-0 right-0 w-[600px] bg-background border-l border-border shadow-2xl z-50 overflow-y-auto">
-      <div className="p-6 space-y-6">
+    <div className="fixed inset-y-0 right-0 w-full sm:w-[600px] max-w-[100vw] bg-background border-l border-border shadow-2xl z-[1100] overflow-y-auto">
+      <div className="p-4 sm:p-6 space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="space-y-2 flex-1 pr-4">

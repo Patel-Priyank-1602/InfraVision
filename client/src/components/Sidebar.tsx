@@ -17,6 +17,7 @@ import {
   Factory,
   Truck,
   Zap as ZapIcon,
+  X
 } from "lucide-react";
 import type {
   HydrogenSite,
@@ -34,7 +35,7 @@ interface SidebarProps {
   onSiteNavigate: (lat: number, lng: number) => void;
 }
 
-export default function Sidebar({ isOpen, onSiteSelect, onDashboardToggle, onLayerToggle, enabledLayers, onSiteNavigate }: SidebarProps) {
+export default function Sidebar({ isOpen, onToggle, onSiteSelect, onDashboardToggle, onLayerToggle, enabledLayers, onSiteNavigate }: SidebarProps) {
   const { data: aiSuggestions = [] } = useQuery<HydrogenSite[]>({
     queryKey: ["/api/ai-suggestions"],
     refetchOnWindowFocus: false,
@@ -63,22 +64,47 @@ export default function Sidebar({ isOpen, onSiteSelect, onDashboardToggle, onLay
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <aside className="w-80 bg-card border-r border-border overflow-y-auto">
-      <div className="p-6 space-y-6">
-        {/* AI Suggestions - Indian Hydrogen Plans */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-foreground flex items-center space-x-2">
-              <Brain className="w-4 h-4 text-primary" />
-              <span>Hydrogen Plans</span>
-            </h2>
-            <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full font-medium">
-              {aiSuggestions.length} Projects
-            </span>
-          </div>
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[40] md:hidden"
+          onClick={onToggle}
+        />
+      )}
+      
+      <aside 
+        className={`
+          absolute md:relative z-[50] h-full bg-card border-r border-border overflow-y-auto
+          transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          w-[85vw] sm:w-80 md:w-80
+          ${!isOpen && 'md:hidden'}
+        `}
+      >
+        <div className="p-4 md:p-6 space-y-6">
+          {/* AI Suggestions - Indian Hydrogen Plans */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground flex items-center space-x-2">
+                <Brain className="w-4 h-4 text-primary" />
+                <span>Hydrogen Plans</span>
+              </h2>
+              <div className="flex items-center gap-2">
+                <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full font-medium">
+                  {aiSuggestions.length} Projects
+                </span>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="md:hidden h-8 w-8 rounded-full" 
+                  onClick={onToggle}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
 
           <div className="space-y-3">
             {aiSuggestions.length === 0 ? (
@@ -146,7 +172,8 @@ export default function Sidebar({ isOpen, onSiteSelect, onDashboardToggle, onLay
             Plants Dashboard
           </Button>
         </div>
-      </div>
-    </aside>
+        </div>
+      </aside>
+    </>
   );
 }
