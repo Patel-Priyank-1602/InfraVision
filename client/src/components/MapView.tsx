@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Menu, X, TrendingUp, Download, Share2 } from "lucide-react";
-import { isUnauthorizedError } from "@/lib/authUtils";
 import { apiRequest } from "@/lib/queryClient";
 import type { HydrogenSite, RenewableSource, DemandCenter, SiteAnalysis } from "@/types/hydrogen";
 import SiteAnalysisPanel from "./SiteAnalysisPanel";
@@ -29,7 +27,6 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
   const dragMarkerRef = useRef<any>(null);
   const layerGroupsRef = useRef<{ [key: string]: any }>({});
   const { toast } = useToast();
-  const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
 
   // State for analytics panel
@@ -40,7 +37,6 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
   // Fetch hydrogen sites
   const { data: hydrogenSites = [] } = useQuery<HydrogenSite[]>({
     queryKey: ['/api/hydrogen-sites'],
-    enabled: isAuthenticated,
     refetchOnWindowFocus: false,
   });
 
@@ -81,17 +77,6 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
       });
     },
     onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-        return;
-      }
       toast({
         title: "Error",
         description: "Failed to create hydrogen site. Please try again.",
@@ -112,17 +97,6 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
       setShowAnalytics(true);
     },
     onError: (error) => {
-      if (isUnauthorizedError(error)) {
-        toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
-          variant: "destructive",
-        });
-        setTimeout(() => {
-          window.location.href = "/api/login";
-        }, 500);
-        return;
-      }
       console.error("Site analysis error:", error);
     },
   });

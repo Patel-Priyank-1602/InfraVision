@@ -1,69 +1,68 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-// Removed Replit Auth - using Supabase instead
-import { chatWithAssistant, analyzeSiteLocation, type ChatMessage } from "./openai";
-import { insertHydrogenSiteSchema } from "@shared/schema";
-import { z } from "zod";
+import { chatWithAssistant, type ChatMessage } from "./groq";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Since we're using Supabase for auth, we don't need server-side auth routes
-
   // Hydrogen sites routes
   app.post('/api/hydrogen-sites', async (req: any, res) => {
     try {
-      // For demo purposes, we'll use a default user ID
       const userId = "demo-user";
-      const siteData = insertHydrogenSiteSchema.parse({
-        ...req.body,
-        userId
-      });
+      const { name, latitude, longitude } = req.body;
 
-      // Get nearby infrastructure for AI analysis
-      const renewables = await storage.getRenewableSources();
-      const demandCenters = await storage.getDemandCenters();
+      if (!name || !latitude || !longitude) {
+        return res.status(400).json({ message: "Name, latitude, and longitude are required" });
+      }
+
+      // Get nearby infrastructure for analysis
+      const renewables = storage.getRenewableSources();
+      const demandCenters = storage.getDemandCenters();
       
       // Calculate distances and find nearby infrastructure
       const nearbyRenewables = renewables
         .map(r => ({
           type: r.type,
           distance: calculateDistance(
-            parseFloat(siteData.latitude), 
-            parseFloat(siteData.longitude),
+            parseFloat(latitude), 
+            parseFloat(longitude),
             parseFloat(r.latitude), 
             parseFloat(r.longitude)
           ),
           capacity: r.capacity || 100
         }))
-        .filter(r => r.distance < 100) // Within 100km
+        .filter(r => r.distance < 100)
         .slice(0, 5);
 
       const nearbyDemand = demandCenters
         .map(d => ({
           type: d.type,
           distance: calculateDistance(
-            parseFloat(siteData.latitude), 
-            parseFloat(siteData.longitude),
+            parseFloat(latitude), 
+            parseFloat(longitude),
             parseFloat(d.latitude), 
             parseFloat(d.longitude)
           ),
           level: d.demandLevel
         }))
-        .filter(d => d.distance < 150) // Within 150km
+        .filter(d => d.distance < 150)
         .slice(0, 5);
 
       // Calculate location-based analysis
       const analysis = calculateLocationSuitability(
-        parseFloat(siteData.latitude),
-        parseFloat(siteData.longitude),
+        parseFloat(latitude),
+        parseFloat(longitude),
         nearbyRenewables,
         nearbyDemand
       );
 
-      // Create site with AI-calculated values
-      const site = await storage.createHydrogenSite({
-        ...siteData,
+      // Create site with calculated values
+      const site = storage.createHydrogenSite({
+        userId,
+        name,
+        latitude,
+        longitude,
         suitabilityScore: analysis.suitabilityScore,
+        isAiSuggested: false,
         co2SavedAnnually: analysis.co2SavedAnnually,
         industriesSupported: analysis.industriesSupported,
         renewableUtilization: analysis.renewableUtilization
@@ -72,18 +71,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ site, analysis });
     } catch (error) {
       console.error("Error creating hydrogen site:", error);
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid site data", errors: error.errors });
-      }
       res.status(500).json({ message: "Failed to create hydrogen site" });
     }
   });
 
   app.get('/api/hydrogen-sites', async (req: any, res) => {
     try {
-      // For demo purposes, use default user ID
       const userId = "demo-user";
-      const sites = await storage.getHydrogenSites(userId);
+      const sites = storage.getHydrogenSites(userId);
       res.json(sites);
     } catch (error) {
       console.error("Error fetching hydrogen sites:", error);
@@ -93,10 +88,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete('/api/hydrogen-sites/:id', async (req: any, res) => {
     try {
-      // For demo purposes, use default user ID
       const userId = "demo-user";
       const siteId = req.params.id;
-      await storage.deleteHydrogenSite(siteId, userId);
+      storage.deleteHydrogenSite(siteId, userId);
       res.json({ message: "Site deleted successfully" });
     } catch (error) {
       console.error("Error deleting hydrogen site:", error);
@@ -107,16 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // AI suggestions route
   app.get('/api/ai-suggestions', async (req, res) => {
     try {
-      const country = req.query.country as string;
-      let aiSites = await storage.getAiSuggestedSites();
-      
-      // Filter by country if specified
-      if (country && country.toLowerCase() !== 'india') {
-        // For now, we only have Indian data, so return empty for other countries
-        // In a real application, you would have data for other countries
-        aiSites = [];
-      }
-      
+      const aiSites = storage.getAiSuggestedSites();
       res.json(aiSites);
     } catch (error) {
       console.error("Error fetching AI suggestions:", error);
@@ -124,18 +109,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Infrastructure data routes with country filtering
+  // Infrastructure data routes
   app.get('/api/renewable-sources', async (req, res) => {
     try {
-      const country = req.query.country as string;
-      let sources = await storage.getRenewableSources();
-      
-      // Filter by country if specified
-      if (country && country.toLowerCase() !== 'india') {
-        // For now, we only have Indian data
-        sources = [];
-      }
-      
+      const sources = storage.getRenewableSources();
       res.json(sources);
     } catch (error) {
       console.error("Error fetching renewable sources:", error);
@@ -145,15 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/demand-centers', async (req, res) => {
     try {
-      const country = req.query.country as string;
-      let centers = await storage.getDemandCenters();
-      
-      // Filter by country if specified
-      if (country && country.toLowerCase() !== 'india') {
-        // For now, we only have Indian data
-        centers = [];
-      }
-      
+      const centers = storage.getDemandCenters();
       res.json(centers);
     } catch (error) {
       console.error("Error fetching demand centers:", error);
@@ -161,7 +130,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Chatbot route
+  // Chatbot route (uses Groq API)
   app.post('/api/chat', async (req, res) => {
     try {
       const { messages }: { messages: ChatMessage[] } = req.body;
@@ -188,8 +157,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get nearby infrastructure
-      const renewables = await storage.getRenewableSources();
-      const demandCenters = await storage.getDemandCenters();
+      const renewables = storage.getRenewableSources();
+      const demandCenters = storage.getDemandCenters();
       
       const nearbyRenewables = renewables
         .map(r => ({
@@ -209,13 +178,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .filter(d => d.distance < 150)
         .slice(0, 5);
 
-      // Calculate location-based suitability score using real factors
+      // Calculate location-based suitability score
       const analysis = calculateLocationSuitability(latitude, longitude, nearbyRenewables, nearbyDemand);
       res.json(analysis);
     } catch (error) {
       console.error("Error analyzing site:", error);
       res.status(500).json({ message: "Failed to analyze site" });
     }
+  });
+
+  // Health check
+  app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
   const httpServer = createServer(app);
@@ -232,7 +206,7 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
     Math.sin(dLon/2) * Math.sin(dLon/2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  const d = R * c; // Distance in kilometers
+  const d = R * c;
   return d;
 }
 
@@ -278,18 +252,15 @@ function calculateLocationSuitability(
   }
   
   // Geographic bonus for optimal regions in India (0-15 points)
-  // Gujarat, Rajasthan, Maharashtra - high renewable potential
-  if ((latitude >= 20 && latitude <= 24 && longitude >= 68 && longitude <= 74) || // Gujarat
-      (latitude >= 24 && latitude <= 30 && longitude >= 69 && longitude <= 78) || // Rajasthan
-      (latitude >= 16 && latitude <= 21 && longitude >= 72 && longitude <= 80)) { // Maharashtra
+  if ((latitude >= 20 && latitude <= 24 && longitude >= 68 && longitude <= 74) ||
+      (latitude >= 24 && latitude <= 30 && longitude >= 69 && longitude <= 78) ||
+      (latitude >= 16 && latitude <= 21 && longitude >= 72 && longitude <= 80)) {
     score += 15;
   }
-  // Tamil Nadu, Karnataka - coastal advantage
-  else if ((latitude >= 8 && latitude <= 15 && longitude >= 76 && longitude <= 82) || // Tamil Nadu/Karnataka
-           (latitude >= 11 && latitude <= 16 && longitude >= 74 && longitude <= 78)) { // Karnataka
+  else if ((latitude >= 8 && latitude <= 15 && longitude >= 76 && longitude <= 82) ||
+           (latitude >= 11 && latitude <= 16 && longitude >= 74 && longitude <= 78)) {
     score += 12;
   }
-  // Other states with decent potential
   else {
     score += 8;
   }
@@ -312,7 +283,7 @@ function calculateLocationSuitability(
       transportCost: nearbyDemand.length > 2 ? "Low" : nearbyDemand.length > 0 ? "Medium" : "High",
       demandProximity: nearbyDemand.length > 1 ? "Excellent" : nearbyDemand.length > 0 ? "Good" : "Fair",
       waterAvailability: latitude < 15 ? "Excellent" : latitude > 25 ? "Good" : "Very Good",
-      regulatorySupport: "Strong" // India has strong hydrogen policy support
+      regulatorySupport: "Strong"
     },
     recommendations: [
       nearbyRenewables.length === 0 ? "Consider renewable energy integration" : "Excellent renewable proximity",

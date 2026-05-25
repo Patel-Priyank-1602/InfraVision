@@ -14,17 +14,6 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
 
 ---
 
-## 📸 Preview
-
-<div>
-  <img width="330" alt="Screenshot" src="assets/1.png" style="display:inline-block; margin-right:10px;" />
-  <img width="330" alt="Main" src="assets/5.png" style="display:inline-block; margin-right:10px;" />
-  <img width="330" alt="Score" src="assets/6.png" style="display:inline-block;" />
-</div>
-
-
----
-
 ## 🛠 Key Features
 
 ### 🌐 Interactive Map
@@ -38,52 +27,33 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
   - AI Suggested Sites
 * Drag & drop site markers
 * Real-time **Site Assessment & Suitability Analysis**
-<div>
-  <img width="400" alt="Screenshot1" src="assets/5.png" style="display:inline-block; margin-right:10px;" />
-  <img width="400" alt="Screenshot2" src="assets/6.png" style="display:inline-block; margin-right:10px;" />
-  <img width="400" alt="Screenshot3" src="assets/7.png" style="display:inline-block; margin-right:10px;" />
-  <img width="400" alt="Screenshot4" src="assets/20.png" style="display:inline-block;" />
-</div>
-
 
 ### 🎮 Gamified Optimization
 * AI-suggested site highlights
 * Left panel with **AI suggestion plans**
 * Click to jump to suggested location
 * Scoring for site suitability and sustainability impact
-<div>
-  <img width="420" alt="Screenshot1" src="assets/22.png" style="display:inline-block; margin-right:10px;" />
-  <img width="420" alt="Screenshot2" src="assets/23.png" style="display:inline-block; margin-right:10px;" />
-</div>
 
-### 🤖 AI Assistant
-* Powered by **Gemini API**
-* Provides insights, recommendations, and interactive help
-<img width="420" alt="Screenshot1" src="assets/15.png" style="display:inline-block; margin-right:10px;" />  
+### 🤖 AI-Powered Site Analysis
+* Powered by **Groq API** (Llama 3.1)
+* Automatically evaluates dropped locations based on proximity to renewable energy and demand centers
+* Provides detailed recommendations and dynamic suitability scores
 
 ### 📊 Dashboard & Analysis
 * Plants Dashboard with metrics
 * Suitability & impact analysis charts
 * CO₂ saved, industries supported, renewable utilization
 * Export images & share button for quick access
-<div>
-  <img width="400" alt="Screenshot1" src="assets/24.png" style="display:inline-block; margin-right:10px;" />
-  <img width="400" alt="Screenshot2" src="assets/25.png" style="display:inline-block; margin-right:10px;" />
-</div>
 
 ### 📍 Drag & Explore Any Location
 * Drag anywhere on the map
 * Access Site Assessment details: terrain, infrastructure proximity, land availability
 * Check Impact Metrics: CO₂ saved, industries supported, renewable utilization
 * Overall Score: provides a single metric summarizing site viability and planning potential
-<div>
-  <img width="400" alt="Screenshot1" src="assets/26.png" style="display:inline-block; margin-right:10px;" />
-  <img width="400" alt="Screenshot2" src="assets/27.png" style="display:inline-block; margin-right:10px;" />
-</div>
 
 ### 🌙 Other Features
 * Dark/Light mode toggle
-* Authentication & user management via **Supabase**
+* Fully local, in-memory data store with seeded infrastructure data
 * Help form for support
 * About page explaining the project
 
@@ -96,7 +66,6 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
 3. Drag & drop your own plant → get suitability score & analysis.
 4. Open the dashboard → view CO₂ savings, industries supported, renewables usage.
 5. Export & share → quick access for presentations and reports.
-<img width="400" alt="Screenshot2" src="assets/hackethon.drawio.png" style="display:inline-block; margin-right:10px;" />
 
 ---
 
@@ -127,14 +96,50 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
 
 ### Backend
 * Node.js + Express  
-* PostgreSQL  
-* Supabase  
-* Gemini API  
+* In-Memory Data Storage (No database setup required)
+* Groq API (Llama 3.1) for AI analysis  
 
-### Authentication & Map
-* Supabase Auth  
+### Map Integration
 * Leaflet.js Maps  
 * OpenStreetMap (OSM)  
+
+---
+
+## 🔄 System Architecture & Flow
+
+The following sequence diagram illustrates the core process of how the application calculates and creates a new AI-scored hydrogen site.
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Frontend as React Map UI
+    participant Backend as Express Server
+    participant Storage as In-Memory Data
+    participant Groq as Groq API (Llama 3.1)
+
+    User->>Frontend: Drag & Drop site marker
+    Frontend->>Backend: POST /api/hydrogen-sites (lat, lng)
+    
+    activate Backend
+    Backend->>Storage: Fetch nearby renewables & demand centers
+    Storage-->>Backend: Infrastructure data points
+    
+    Backend->>Backend: Calculate distance & base metrics
+    
+    Backend->>Groq: Request AI Analysis (Prompt + Data)
+    activate Groq
+    Note over Groq: Evaluates terrain, proximity,<br/>demand levels, and capacity
+    Groq-->>Backend: Return Suitability Score & JSON Analysis
+    deactivate Groq
+    
+    Backend->>Storage: Create & Save new Hydrogen Site
+    Storage-->>Backend: Confirmed
+    
+    Backend-->>Frontend: Return Site Object & Impact Analysis
+    deactivate Backend
+    
+    Frontend->>User: Display Suitability Score & Impact Panel
+```
 
 ---
 
@@ -143,7 +148,6 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
 * **Dashboard** → Main map, AI suggestions, plants dashboard, drag & drop, site assessment  
 * **About** → Project description, team, impact  
 * **Help** → Support form  
-<img width="1000" alt="Screenshot2" src="assets/28.png" style="display:inline-block; margin-right:10px;" />
 
 ---
 
@@ -179,4 +183,4 @@ MIT License – free to use, modify, and distribute.
 
 ## 🙏 Thank You
 
-Thank you for exploring **Green Hydrogen InfraVision**. Together, let's accelerate the green hydrogen revolution!  
+Thank you for exploring **Green Hydrogen InfraVision**. Together, let's accelerate the green hydrogen revolution!

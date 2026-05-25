@@ -4,13 +4,11 @@ import Sidebar from "@/components/Sidebar";
 import MapView from "@/components/MapView";
 import ImpactPanel from "@/components/ImpactPanel";
 import PlantsDashboard from "@/components/PlantsDashboard";
-import Chatbot from "@/components/Chatbot";
 import PlanDetailsPanel from "@/components/PlanDetailsPanel";
 import type { HydrogenSite, SiteAnalysis } from "@/types/hydrogen";
 
 export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedSite, setSelectedSite] = useState<HydrogenSite | null>(null);
   const [showImpactPanel, setShowImpactPanel] = useState(false);
   const [showDashboard, setShowDashboard] = useState(false);
@@ -29,11 +27,9 @@ export default function Home() {
   const handleSiteSelect = (site: HydrogenSite) => {
     setSelectedSite(site);
     if (site.isAiSuggested) {
-      // If it's an AI suggested site (Indian hydrogen plan), show detailed plan panel
       setSelectedPlan(site);
       setShowPlanDetails(true);
     } else {
-      // If it's a user-created site, show the impact panel
       setShowImpactPanel(true);
     }
   };
@@ -58,12 +54,9 @@ export default function Home() {
     }
   };
 
-
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header 
-        onChatToggle={() => setIsChatOpen(!isChatOpen)}
         onDashboardToggle={() => setShowDashboard(!showDashboard)}
       />
       
@@ -87,7 +80,6 @@ export default function Home() {
             enabledLayers={enabledLayers}
             onMapReady={setMapInstance}
           />
-          
           
           {showImpactPanel && selectedSite && (
             <ImpactPanel 
@@ -114,10 +106,6 @@ export default function Home() {
           
         </main>
       </div>
-      
-      {isChatOpen && (
-        <Chatbot onClose={() => setIsChatOpen(false)} />
-      )}
     </div>
   );
 }
