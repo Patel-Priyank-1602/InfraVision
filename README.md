@@ -41,6 +41,12 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
 * Automatically evaluates dropped locations based on proximity to renewable energy and demand centers
 * Provides detailed recommendations and dynamic suitability scores
 
+### 💬 AI Chatbot Assistant
+* Integrated expert chatbot specialized in India's green hydrogen infrastructure
+* Ask questions about government policies, real-world projects, and suitability scoring
+* Powered by **Groq API** (Llama 3.1) for fast and contextual responses
+
+
 ### 📊 Dashboard & Analysis
 * Plants Dashboard with metrics
 * Suitability & impact analysis charts
