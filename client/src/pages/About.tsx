@@ -146,7 +146,7 @@ export default function About() {
             <div className="aspect-video max-w-4xl mx-auto">
               <iframe
                 className="w-full h-full rounded-lg shadow-lg"
-                src="https://www.youtube.com/embed/aYBGSfzaa4c?si=ozpfQr3kdL7j2hau"
+                src="https://www.youtube.com/embed/GU-SZCYYWCQ?si=_LRKAkZcm0k0jD7J"
                 title="InfraVision Tutorial - How to Plan Green Hydrogen Infrastructure"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -250,15 +250,12 @@ export default function About() {
                     <h4 className="font-semibold mb-2">Backend</h4>
                     <ul className="space-y-1 text-muted-foreground">
                       <li>• Node.js + Express</li>
-                      <li>• PostgreSQL </li>
-                      <li>• Supabase </li>
-                      <li>• Gemini API</li>
+                      <li>• Groq API</li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2">Auth & Map</h4>
+                    <h4 className="font-semibold mb-2">Map</h4>
                     <ul className="space-y-1 text-muted-foreground">
-                      <li>• Supabase</li>
                       <li>• Leaflet.js Maps</li>
                       <li>• OSM Map</li>
                     </ul>

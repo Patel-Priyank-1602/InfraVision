@@ -103,7 +103,7 @@ export default function Header({ onDashboardToggle }: HeaderProps) {
                   </button>
                   
                   <a 
-                    href="https://github.com" 
+                    href="https://github.com/Patel-Priyank-1602/InfraVision.git" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-300 hover:scale-110"
