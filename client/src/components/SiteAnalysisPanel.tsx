@@ -32,7 +32,7 @@ export default function SiteAnalysisPanel({ analysis, onClose, isLoading }: Site
   };
 
   return (
-    <Card className="absolute top-4 left-4 z-[1000] w-72 md:w-80 lg:w-96 max-w-[calc(100vw-2rem)] bg-card border border-border shadow-lg">
+    <Card className="absolute top-4 left-4 z-[1000] w-72 md:w-80 lg:w-96 max-w-[calc(100vw-2rem)] glass-card border-border/50 animate-in fade-in slide-in-from-left-4 duration-300">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-foreground">Site Assessment</h3>
@@ -102,13 +102,13 @@ export default function SiteAnalysisPanel({ analysis, onClose, isLoading }: Site
 
             {/* Quick Impact Metrics */}
             <div className="grid grid-cols-2 gap-3 pt-2 border-t border-border">
-              <div className="bg-muted rounded p-2 text-center">
+              <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-lg p-2 text-center">
                 <div className="text-sm font-bold text-green-600 dark:text-green-400" data-testid="text-co2-savings">
                   {(analysis.co2SavedAnnually / 1000).toFixed(0)}kt
                 </div>
                 <div className="text-xs text-muted-foreground">CO₂ Saved/Year</div>
               </div>
-              <div className="bg-muted rounded p-2 text-center">
+              <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-lg p-2 text-center">
                 <div className="text-sm font-bold text-secondary" data-testid="text-industries-supported">
                   {analysis.industriesSupported}
                 </div>
@@ -126,7 +126,7 @@ export default function SiteAnalysisPanel({ analysis, onClose, isLoading }: Site
                 <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Key Factors</h4>
                 <div className="space-y-2">
                   {Object.entries(analysis.factors).map(([key, value]) => (
-                    <div key={key} className="flex justify-between items-center text-xs bg-muted rounded p-2">
+                    <div key={key} className="flex justify-between items-center text-xs bg-background/40 backdrop-blur-sm border border-border/30 rounded p-2 hover:border-primary/50 transition-colors">
                       <span className="font-medium text-foreground capitalize">
                         {key.replace(/([A-Z])/g, ' $1').trim()}
                       </span>
@@ -156,13 +156,13 @@ export default function SiteAnalysisPanel({ analysis, onClose, isLoading }: Site
 
             {/* Additional Metrics */}
             <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-border">
-              <div className="bg-muted rounded p-2 text-center">
+              <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-lg p-2 text-center">
                 <div className="font-bold text-accent" data-testid="text-renewable-utilization">
                   {analysis.renewableUtilization}%
                 </div>
                 <div className="text-muted-foreground">Renewable Use</div>
               </div>
-              <div className="bg-muted rounded p-2 text-center">
+              <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-lg p-2 text-center">
                 <div className="font-bold text-primary">
                   Strong
                 </div>

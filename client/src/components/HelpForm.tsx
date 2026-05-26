@@ -131,20 +131,7 @@ export default function HelpForm({ onClose }: HelpFormProps) {
     <>
       {/* Full screen overlay that completely covers everything */}
       <div 
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.9)',
-          zIndex: 999999999,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '20px',
-          boxSizing: 'border-box'
-        }}
+        className="fixed inset-0 w-screen h-screen bg-background/80 backdrop-blur-md z-[9999] flex items-center justify-center p-5"
         onClick={(e) => {
           if (e.target === e.currentTarget) {
             onClose();
@@ -153,62 +140,22 @@ export default function HelpForm({ onClose }: HelpFormProps) {
       >
         {/* Modal Card */}
         <div
-          style={{
-            width: '100%',
-            maxWidth: '700px',
-            maxHeight: '90vh',
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.8)',
-            overflow: 'hidden',
-            border: '4px solid #2563eb',
-            zIndex: 999999999
-          }}
+          className="w-full max-w-[700px] max-h-[90vh] glass-card rounded-2xl overflow-hidden shadow-2xl border border-primary/20 z-[9999] animate-in fade-in zoom-in-95 duration-300"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '24px',
-            backgroundColor: '#eff6ff',
-            borderBottom: '3px solid #2563eb'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ 
-                backgroundColor: '#2563eb', 
-                borderRadius: '50%', 
-                padding: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <HelpCircle className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between p-6 bg-primary/10 border-b border-primary/20 backdrop-blur-sm">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary rounded-full p-2 flex items-center justify-center">
+                <HelpCircle className="w-6 h-6 text-primary-foreground" />
               </div>
-              <h2 style={{ 
-                fontSize: '24px', 
-                fontWeight: 'bold', 
-                color: '#1e40af', 
-                margin: 0 
-              }}>
+              <h2 className="text-2xl font-heading font-bold text-gradient m-0">
                 Help & Support
               </h2>
             </div>
             <button
               onClick={onClose}
-              style={{
-                background: 'none',
-                border: 'none',
-                padding: '8px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#fee2e2',
-                color: '#dc2626'
-              }}
+              className="bg-destructive/10 text-destructive p-2 rounded-lg hover:bg-destructive/20 transition-colors"
               data-testid="button-close-help"
             >
               <X className="w-5 h-5" />
@@ -216,12 +163,7 @@ export default function HelpForm({ onClose }: HelpFormProps) {
           </div>
 
           {/* Content */}
-          <div style={{ 
-            padding: '24px', 
-            backgroundColor: 'white',
-            maxHeight: 'calc(90vh - 120px)',
-            overflowY: 'auto'
-          }}>
+          <div className="p-6 bg-card/50 max-h-[calc(90vh-120px)] overflow-y-auto">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
                 <div>

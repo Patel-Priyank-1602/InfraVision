@@ -571,7 +571,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
             size="icon"
             variant="outline"
             onClick={onSidebarToggle}
-            className="w-10 h-10 bg-card border border-border shadow-lg hover:bg-muted"
+            className="w-10 h-10 glass-card border border-border/50 shadow-lg hover:bg-background/80"
             data-testid="button-sidebar-toggle"
           >
             <Menu className="w-4 h-4" />
@@ -580,7 +580,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
       </div>
 
       {/* Enhanced Instructions with Indian Context */}
-      <div className="absolute bottom-4 left-4 z-[999] bg-card border border-border rounded-lg p-3 md:p-4 shadow-lg max-w-xs md:max-w-sm hidden lg:block">
+      <div className="absolute bottom-4 left-4 z-[999] glass-card border border-border/50 rounded-xl p-3 md:p-4 shadow-lg max-w-xs md:max-w-sm hidden lg:block">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
@@ -611,7 +611,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
             variant="outline"
             onClick={handleExportPDF}
             disabled={isExporting}
-            className="bg-card border border-border shadow-lg hover:bg-muted gap-2"
+            className="glass-card border border-border/50 shadow-lg hover:bg-background/80 gap-2"
             data-testid="button-export-pdf"
           >
             <Download className="w-4 h-4" />
@@ -622,7 +622,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
             size="sm"
             variant="outline"
             onClick={handleShareMap}
-            className="bg-card border border-border shadow-lg hover:bg-muted gap-2"
+            className="glass-card border border-border/50 shadow-lg hover:bg-background/80 gap-2"
             data-testid="button-share-map"
           >
             <Share2 className="w-4 h-4" />
@@ -636,7 +636,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
             size="sm"
             variant="outline"
             onClick={() => setShowAnalytics(true)}
-            className="bg-card border border-border shadow-lg hover:bg-muted flex items-center gap-2"
+            className="glass-card border border-border/50 shadow-lg hover:bg-background/80 flex items-center gap-2"
           >
             <TrendingUp className="w-4 h-4" />
             <span className="text-sm hidden md:inline">Show Analysis</span>

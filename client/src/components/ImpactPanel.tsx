@@ -70,8 +70,8 @@ export default function ImpactPanel({ site, onClose }: ImpactPanelProps) {
   }, [site]);
 
   return (
-    <Card className="absolute bottom-4 right-4 w-[calc(100vw-2rem)] sm:w-96 max-h-[85vh] overflow-y-auto bg-card border border-border shadow-lg z-[1000]">
-      <CardHeader className="pb-3 border-b border-border sticky top-0 bg-card z-10">
+    <Card className="absolute bottom-4 right-4 w-[calc(100vw-2rem)] sm:w-96 max-h-[85vh] overflow-y-auto glass-card z-[1000] animate-in slide-in-from-right-8 duration-500">
+      <CardHeader className="pb-3 border-b border-border/50 sticky top-0 bg-transparent z-10 backdrop-blur-md">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-semibold text-foreground">Sustainability Impact</h3>
@@ -93,7 +93,7 @@ export default function ImpactPanel({ site, onClose }: ImpactPanelProps) {
       
       <CardContent className="p-4 space-y-4">
         {/* CO2 Savings */}
-        <div className="bg-muted rounded-lg p-3">
+        <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl p-3 hover:border-primary/50 transition-all duration-300">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-foreground">CO₂ Saved Annually</span>
             <Leaf className="w-4 h-4 text-primary" />
@@ -105,7 +105,7 @@ export default function ImpactPanel({ site, onClose }: ImpactPanelProps) {
         </div>
         
         {/* Industries Supported */}
-        <div className="bg-muted rounded-lg p-3">
+        <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl p-3 hover:border-secondary/50 transition-all duration-300">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-foreground">Industries Supported</span>
             <Factory className="w-4 h-4 text-secondary" />
@@ -117,7 +117,7 @@ export default function ImpactPanel({ site, onClose }: ImpactPanelProps) {
         </div>
         
         {/* Renewable Utilization */}
-        <div className="bg-muted rounded-lg p-3">
+        <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl p-3 hover:border-accent/50 transition-all duration-300">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-foreground">Renewable Utilization</span>
             <Zap className="w-4 h-4 text-accent" />
@@ -129,7 +129,7 @@ export default function ImpactPanel({ site, onClose }: ImpactPanelProps) {
         </div>
         
         {/* Chart Container */}
-        <div className="h-48 bg-muted rounded-lg p-3">
+        <div className="h-48 bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl p-3">
           <canvas ref={chartRef} data-testid="chart-energy-mix"></canvas>
         </div>
 

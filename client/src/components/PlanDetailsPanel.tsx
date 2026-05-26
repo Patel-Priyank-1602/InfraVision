@@ -85,12 +85,12 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
   ];
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full sm:w-[600px] max-w-[100vw] bg-background border-l border-border shadow-2xl z-[1100] overflow-y-auto">
+    <div className="fixed inset-y-0 right-0 w-full sm:w-[600px] max-w-[100vw] glass border-l border-border/50 shadow-2xl z-[1100] overflow-y-auto animate-in slide-in-from-right duration-500">
       <div className="p-4 sm:p-6 space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="space-y-2 flex-1 pr-4">
-            <h2 className="text-xl font-bold text-foreground leading-tight">
+            <h2 className="text-2xl font-heading font-bold text-gradient leading-tight">
               {plan.name}
             </h2>
             <div className="flex items-center space-x-2">
@@ -119,7 +119,7 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
 
         {/* Key Metrics */}
         <div className="grid grid-cols-2 gap-4">
-          <Card className="p-4">
+        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div className="flex items-center space-x-2 mb-2">
               <Zap className="w-4 h-4 text-blue-600" />
               <span className="text-sm font-medium">Capacity</span>
@@ -128,7 +128,7 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
             <div className="text-xs text-muted-foreground">Production Capacity</div>
           </Card>
 
-          <Card className="p-4">
+        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div className="flex items-center space-x-2 mb-2">
               <DollarSign className="w-4 h-4 text-green-600" />
               <span className="text-sm font-medium">Investment</span>
@@ -139,7 +139,7 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
             <div className="text-xs text-muted-foreground">Total Investment</div>
           </Card>
 
-          <Card className="p-4">
+        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div className="flex items-center space-x-2 mb-2">
               <Truck className="w-4 h-4 text-purple-600" />
               <span className="text-sm font-medium">Production</span>
@@ -148,7 +148,7 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
             <div className="text-xs text-muted-foreground">Tons H₂/year</div>
           </Card>
 
-          <Card className="p-4">
+        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <div className="flex items-center space-x-2 mb-2">
               <Users className="w-4 h-4 text-orange-600" />
               <span className="text-sm font-medium">Jobs</span>
@@ -159,7 +159,7 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
         </div>
 
         {/* Suitability Score */}
-        <Card className="p-4">
+        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-semibold flex items-center space-x-2">
               <Target className="w-4 h-4 text-primary" />
@@ -186,7 +186,7 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
         </Card>
 
         {/* Renewable Energy Mix Chart */}
-        <Card className="p-4">
+        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300">
           <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
             <Leaf className="w-4 h-4 text-green-600" />
             <span>Renewable Energy Mix</span>
@@ -214,7 +214,7 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
         </Card>
 
         {/* Investment Breakdown Chart */}
-        <Card className="p-4">
+        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300">
           <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
             <DollarSign className="w-4 h-4 text-green-600" />
             <span>Investment Breakdown</span>
@@ -242,7 +242,7 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
         </Card>
 
         {/* Yearly Impact Projection */}
-        <Card className="p-4">
+        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300">
           <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
             <BarChart3 className="w-4 h-4 text-blue-600" />
             <span>Yearly Impact Projection</span>
@@ -263,7 +263,7 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
         </Card>
 
         {/* Environmental Impact */}
-        <Card className="p-4">
+        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300">
           <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
             <Building2 className="w-4 h-4 text-green-600" />
             <span>Environmental Impact</span>
@@ -285,7 +285,7 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
         </Card>
 
         {/* Project Timeline */}
-        <Card className="p-4">
+        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300">
           <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
             <Calendar className="w-4 h-4 text-purple-600" />
             <span>Project Timeline</span>

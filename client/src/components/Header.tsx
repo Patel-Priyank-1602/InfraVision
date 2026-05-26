@@ -18,7 +18,7 @@ export default function Header({ onDashboardToggle }: HeaderProps) {
   };
 
   return (
-    <header className="bg-card border-b border-border shadow-sm sticky top-0 z-50">
+    <header className="glass sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -27,7 +27,7 @@ export default function Header({ onDashboardToggle }: HeaderProps) {
               <Leaf className="w-4 h-4 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground">InfraVision</h1>
+              <h1 className="text-xl font-heading font-bold text-gradient">InfraVision</h1>
               <p className="text-xs text-muted-foreground">Green Hydrogen Planning</p>
             </div>
           </div>

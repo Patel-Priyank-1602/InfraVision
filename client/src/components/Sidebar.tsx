@@ -76,7 +76,7 @@ export default function Sidebar({ isOpen, onToggle, onSiteSelect, onDashboardTog
       
       <aside 
         className={`
-          absolute md:relative z-[50] h-full bg-card border-r border-border overflow-y-auto
+          absolute md:relative z-[50] h-full glass border-r border-border overflow-y-auto
           transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
           w-[85vw] sm:w-80 md:w-80
@@ -87,8 +87,8 @@ export default function Sidebar({ isOpen, onToggle, onSiteSelect, onDashboardTog
           {/* AI Suggestions - Indian Hydrogen Plans */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-foreground flex items-center space-x-2">
-                <Brain className="w-4 h-4 text-primary" />
+              <h2 className="text-lg font-heading font-semibold text-gradient flex items-center space-x-2">
+                <Brain className="w-5 h-5 text-primary" />
                 <span>Hydrogen Plans</span>
               </h2>
               <div className="flex items-center gap-2">
@@ -119,7 +119,7 @@ export default function Sidebar({ isOpen, onToggle, onSiteSelect, onDashboardTog
               aiSuggestions.map((suggestion) => (
                 <Card
                   key={suggestion.id}
-                  className="p-4 border border-border hover:border-primary transition-colors cursor-pointer"
+                  className="glass-card p-4 border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
                   onClick={() => {
                     onSiteSelect(suggestion);
                     onSiteNavigate(parseFloat(suggestion.latitude), parseFloat(suggestion.longitude));

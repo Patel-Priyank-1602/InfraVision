@@ -55,7 +55,7 @@ export default function PlantsDashboard({ onClose }: PlantsDashboardProps) {
   const totalIndustries = allSites.reduce((sum, site) => sum + (site.industriesSupported || 0), 0);
 
   return (
-    <Card className="absolute top-4 right-4 left-4 md:left-auto z-[1050] md:w-[600px] h-[85vh] max-h-[700px] bg-gradient-to-br from-card via-card to-muted/30 border-2 border-primary/20 shadow-2xl overflow-hidden backdrop-blur-sm">
+    <Card className="absolute top-4 right-4 left-4 md:left-auto z-[1050] md:w-[600px] h-[85vh] max-h-[700px] glass-card shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-500">
       <CardHeader className="pb-4 border-b border-border/50 bg-gradient-to-r from-primary/5 to-secondary/5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -63,7 +63,7 @@ export default function PlantsDashboard({ onClose }: PlantsDashboardProps) {
               <BarChart3 className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-foreground">Plants Dashboard</h3>
+              <h3 className="text-2xl font-heading font-bold text-gradient">Plants Dashboard</h3>
               <p className="text-sm text-muted-foreground">Analytics & Insights</p>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function PlantsDashboard({ onClose }: PlantsDashboardProps) {
       <CardContent className="p-6 space-y-6 h-[calc(100%-5rem)] overflow-y-auto">
         {/* Summary Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-4 text-center hover:shadow-lg transition-all duration-300">
+          <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl p-4 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
             <div className="flex items-center justify-center mb-2">
               <div className="p-2 rounded-full bg-primary/20">
                 <Map className="w-5 h-5 text-primary" />
@@ -91,7 +91,7 @@ export default function PlantsDashboard({ onClose }: PlantsDashboardProps) {
             <div className="text-2xl font-bold text-foreground mb-1">{allSites.length}</div>
             <div className="text-sm text-muted-foreground font-medium">Total Plants</div>
           </div>
-          <div className="bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20 rounded-xl p-4 text-center hover:shadow-lg transition-all duration-300">
+          <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl p-4 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
             <div className="flex items-center justify-center mb-2">
               <div className="p-2 rounded-full bg-green-500/20">
                 <Leaf className="w-5 h-5 text-green-600" />
@@ -100,7 +100,7 @@ export default function PlantsDashboard({ onClose }: PlantsDashboardProps) {
             <div className="text-2xl font-bold text-green-600 mb-1">{Math.floor(totalCO2Saved / 1000)}kt</div>
             <div className="text-sm text-muted-foreground font-medium">CO₂ Saved/Year</div>
           </div>
-          <div className="bg-gradient-to-br from-secondary/10 to-secondary/5 border border-secondary/20 rounded-xl p-4 text-center hover:shadow-lg transition-all duration-300">
+          <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl p-4 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
             <div className="flex items-center justify-center mb-2">
               <div className="p-2 rounded-full bg-secondary/20">
                 <Factory className="w-5 h-5 text-secondary" />
@@ -113,7 +113,7 @@ export default function PlantsDashboard({ onClose }: PlantsDashboardProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Plant Type Distribution */}
-          <div className="bg-gradient-to-br from-card to-muted/30 border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+          <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl p-4 hover:shadow-lg hover:border-primary/50 transition-all duration-300">
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-accent/20">
                 <BarChart3 className="w-4 h-4 text-accent" />
@@ -155,7 +155,7 @@ export default function PlantsDashboard({ onClose }: PlantsDashboardProps) {
           </div>
 
           {/* Performance Metrics */}
-          <div className="bg-gradient-to-br from-card to-muted/30 border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+          <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl p-4 hover:shadow-lg hover:border-primary/50 transition-all duration-300">
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-primary/20">
                 <Zap className="w-4 h-4 text-primary" />
@@ -194,7 +194,7 @@ export default function PlantsDashboard({ onClose }: PlantsDashboardProps) {
 
         {/* Suitability Scores Chart */}
         {suitabilityData.length > 0 && (
-          <div className="bg-gradient-to-br from-card to-muted/30 border border-border/50 rounded-xl p-4 hover:shadow-lg transition-all duration-300">
+          <div className="bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl p-4 hover:shadow-lg hover:border-primary/50 transition-all duration-300">
             <div className="flex items-center gap-2 mb-4">
               <div className="p-1.5 rounded-lg bg-secondary/20">
                 <BarChart3 className="w-4 h-4 text-secondary" />

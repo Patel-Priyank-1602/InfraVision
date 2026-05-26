@@ -64,7 +64,7 @@ export default function HydrogenCalculator() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+          <h1 className="text-4xl font-heading font-bold text-gradient mb-3">
             Green Hydrogen Calculator
           </h1>
           <p className="text-muted-foreground">
@@ -74,9 +74,9 @@ export default function HydrogenCalculator() {
 
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Input Panel */}
-          <Card>
+          <Card className="glass-card hover:shadow-lg transition-all duration-300">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 font-heading text-primary">
                 <Calculator className="w-5 h-5" />
                 Plant Parameters
               </CardTitle>
@@ -176,9 +176,9 @@ export default function HydrogenCalculator() {
           </Card>
 
           {/* Results Panel */}
-          <Card>
+          <Card className="glass-card hover:shadow-lg transition-all duration-300">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 font-heading text-primary">
                 <IndianRupee className="w-5 h-5" />
                 Economic Analysis
               </CardTitle>
@@ -247,7 +247,7 @@ export default function HydrogenCalculator() {
               </div>
               
               {/* Key Assumptions */}
-              <div className="mt-6 p-4 bg-muted rounded-lg">
+              <div className="mt-6 p-4 bg-background/40 backdrop-blur-sm border border-border/30 rounded-xl">
                 <h4 className="font-semibold mb-2">Key Assumptions (India Context)</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Electrolyzer efficiency: 75%</li>
