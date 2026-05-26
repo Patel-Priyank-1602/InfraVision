@@ -119,42 +119,42 @@ export default function PlanDetailsPanel({ plan, onClose }: PlanDetailsPanelProp
 
         {/* Key Metrics */}
         <div className="grid grid-cols-2 gap-4">
-        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 overflow-hidden">
             <div className="flex items-center space-x-2 mb-2">
-              <Zap className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium">Capacity</span>
+              <Zap className="w-4 h-4 text-blue-600 flex-shrink-0" />
+              <span className="text-sm font-medium truncate">Capacity</span>
             </div>
-            <div className="text-2xl font-bold text-blue-600">{planData.capacity} MW</div>
-            <div className="text-xs text-muted-foreground">Production Capacity</div>
+            <div className="text-xl sm:text-2xl font-bold text-blue-600 truncate">{planData.capacity} MW</div>
+            <div className="text-xs text-muted-foreground truncate">Production Capacity</div>
           </Card>
 
-        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 overflow-hidden">
             <div className="flex items-center space-x-2 mb-2">
-              <DollarSign className="w-4 h-4 text-green-600" />
-              <span className="text-sm font-medium">Investment</span>
+              <DollarSign className="w-4 h-4 text-green-600 flex-shrink-0" />
+              <span className="text-sm font-medium truncate">Investment</span>
             </div>
-            <div className="text-2xl font-bold text-green-600">
-              ₹{(planData.investment * 1000000).toLocaleString()}
+            <div className="text-xl sm:text-2xl font-bold text-green-600 truncate" title={`₹${(planData.investment * 1000000).toLocaleString()}`}>
+              ₹{(planData.investment / 10).toLocaleString(undefined, {maximumFractionDigits: 1})} Cr
             </div>
-            <div className="text-xs text-muted-foreground">Total Investment</div>
+            <div className="text-xs text-muted-foreground truncate">Total Investment</div>
           </Card>
 
-        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 overflow-hidden">
             <div className="flex items-center space-x-2 mb-2">
-              <Truck className="w-4 h-4 text-purple-600" />
-              <span className="text-sm font-medium">Production</span>
+              <Truck className="w-4 h-4 text-purple-600 flex-shrink-0" />
+              <span className="text-sm font-medium truncate">Production</span>
             </div>
-            <div className="text-2xl font-bold text-purple-600">{planData.yearlyProduction}</div>
-            <div className="text-xs text-muted-foreground">Tons H₂/year</div>
+            <div className="text-xl sm:text-2xl font-bold text-purple-600 truncate">{planData.yearlyProduction}</div>
+            <div className="text-xs text-muted-foreground truncate">Tons H₂/year</div>
           </Card>
 
-        <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <Card className="glass-card p-4 border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 overflow-hidden">
             <div className="flex items-center space-x-2 mb-2">
-              <Users className="w-4 h-4 text-orange-600" />
-              <span className="text-sm font-medium">Jobs</span>
+              <Users className="w-4 h-4 text-orange-600 flex-shrink-0" />
+              <span className="text-sm font-medium truncate">Jobs</span>
             </div>
-            <div className="text-2xl font-bold text-orange-600">{planData.jobsCreated}</div>
-            <div className="text-xs text-muted-foreground">Direct & Indirect</div>
+            <div className="text-xl sm:text-2xl font-bold text-orange-600 truncate">{planData.jobsCreated}</div>
+            <div className="text-xs text-muted-foreground truncate">Direct & Indirect</div>
           </Card>
         </div>
 

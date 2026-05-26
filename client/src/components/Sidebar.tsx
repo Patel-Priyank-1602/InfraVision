@@ -76,37 +76,26 @@ export default function Sidebar({ isOpen, onToggle, onSiteSelect, onDashboardTog
       
       <aside 
         className={`
-          absolute md:relative z-[50] h-full glass border-r border-border overflow-y-auto
-          transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-          w-[85vw] sm:w-80 md:w-80
-          ${!isOpen && 'md:hidden'}
+          fixed bottom-0 left-0 right-0 z-[50] glass border-t border-border backdrop-blur-xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)]
+          transition-all duration-700 ease-out
+          ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'}
         `}
       >
-        <div className="p-4 md:p-6 space-y-6">
-          {/* AI Suggestions - Indian Hydrogen Plans */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-heading font-semibold text-gradient flex items-center space-x-2">
-                <Brain className="w-5 h-5 text-primary" />
-                <span>Hydrogen Plans</span>
-              </h2>
-              <div className="flex items-center gap-2">
-                <span className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full font-medium">
-                  {aiSuggestions.length} Projects
-                </span>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="md:hidden h-8 w-8 rounded-full" 
-                  onClick={onToggle}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
+        <div className="p-2 md:p-3 flex items-center gap-2 md:gap-4 relative w-full overflow-hidden">
+          {/* Close Button */}
+          <div className="flex-shrink-0 pl-1 md:pl-2">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 rounded-full hover:bg-destructive/10 hover:text-destructive transition-colors bg-background/50 shadow-sm border border-border/50" 
+              onClick={onToggle}
+              title="Close Projects"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
 
-          <div className="space-y-3">
+          <div className="flex gap-3 overflow-x-auto py-2 flex-1 w-full snap-x snap-mandatory hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             {aiSuggestions.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <Brain className="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -119,15 +108,15 @@ export default function Sidebar({ isOpen, onToggle, onSiteSelect, onDashboardTog
               aiSuggestions.map((suggestion) => (
                 <Card
                   key={suggestion.id}
-                  className="glass-card p-4 border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
+                  className="min-w-[220px] md:min-w-[260px] snap-center glass-card p-3 border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer flex-shrink-0"
                   onClick={() => {
                     onSiteSelect(suggestion);
                     onSiteNavigate(parseFloat(suggestion.latitude), parseFloat(suggestion.longitude));
                   }}
                   data-testid={`card-ai-suggestion-${suggestion.id}`}
                 >
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-medium text-foreground text-sm leading-tight">
+                  <div className="flex items-start justify-between mb-1.5">
+                    <h3 className="font-semibold text-foreground text-xs leading-tight">
                       {suggestion.name}
                     </h3>
                     <span
@@ -159,19 +148,6 @@ export default function Sidebar({ isOpen, onToggle, onSiteSelect, onDashboardTog
               ))
             )}
           </div>
-        </div>
-
-        {/* Dashboard Access */}
-        <div className="space-y-4">
-          <Button 
-            onClick={onDashboardToggle}
-            className="w-full justify-start gap-2 bg-accent hover:bg-accent/90 text-accent-foreground"
-            data-testid="button-dashboard"
-          >
-            <BarChart3 className="w-4 h-4" />
-            Plants Dashboard
-          </Button>
-        </div>
         </div>
       </aside>
     </>

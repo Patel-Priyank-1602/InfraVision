@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Menu, X, TrendingUp, Download, Share2 } from "lucide-react";
+import { Menu, X, TrendingUp, Download, Share2, HelpCircle } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import type { HydrogenSite, RenewableSource, DemandCenter, SiteAnalysis } from "@/types/hydrogen";
 import SiteAnalysisPanel from "./SiteAnalysisPanel";
@@ -33,6 +33,7 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
   const [currentAnalysis, setCurrentAnalysis] = useState<SiteAnalysis | null>(null);
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   // Fetch hydrogen sites
   const { data: hydrogenSites = [] } = useQuery<HydrogenSite[]>({
@@ -542,6 +543,20 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
     }
   };
 
+  // Listen for custom events from the main navbar
+  useEffect(() => {
+    const handleExportEvent = () => handleExportPDF();
+    const handleShareEvent = () => handleShareMap();
+    
+    document.addEventListener('export-map', handleExportEvent);
+    document.addEventListener('share-map', handleShareEvent);
+    
+    return () => {
+      document.removeEventListener('export-map', handleExportEvent);
+      document.removeEventListener('share-map', handleShareEvent);
+    };
+  }, []);
+
   // Get score color based on value
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-600 bg-green-50 border-green-200';
@@ -565,71 +580,69 @@ export default function MapView({ onSiteSelect, onScoreUpdate, sidebarOpen, onSi
       )}
 
       {/* Floating Controls */}
-      <div className="absolute top-4 right-4 z-[1000] space-y-2">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000]">
         {!sidebarOpen && (
           <Button
-            size="icon"
             variant="outline"
             onClick={onSidebarToggle}
-            className="w-10 h-10 glass-card border border-border/50 shadow-lg hover:bg-background/80"
+            className="rounded-full shadow-2xl border-2 border-primary/30 hover:bg-background/95 hover:border-primary/60 hover:scale-105 active:scale-95 transition-all duration-500 flex items-center gap-2 px-6 py-3 bg-background/95 backdrop-blur-md animate-in slide-in-from-bottom-10"
             data-testid="button-sidebar-toggle"
           >
-            <Menu className="w-4 h-4" />
+            <span className="font-bold text-sm tracking-wide text-primary">View Hydrogen Projects</span>
+            <div className="flex flex-col items-center justify-center animate-bounce">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="m18 15-6-6-6 6"/></svg>
+            </div>
           </Button>
         )}
       </div>
 
-      {/* Enhanced Instructions with Indian Context */}
-      <div className="absolute bottom-4 left-4 z-[999] glass-card border border-border/50 rounded-xl p-3 md:p-4 shadow-lg max-w-xs md:max-w-sm hidden lg:block">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
-            <p className="text-xs text-muted-foreground">
-              <strong>Click</strong> anywhere in India to place hydrogen plant
-            </p>
+      {/* Enhanced Instructions with Indian Context (Toggleable) */}
+      <div className="absolute top-4 left-16 z-[500]">
+        {!showGuide ? (
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => setShowGuide(true)}
+            className="w-10 h-10 rounded-full glass-card border border-primary/20 shadow-lg hover:bg-background/90 transition-all hover:scale-105"
+            title="Show Guide"
+          >
+            <HelpCircle className="w-5 h-5 text-primary" />
+          </Button>
+        ) : (
+          <div className="glass-card border border-border/50 rounded-xl p-3 md:p-4 shadow-lg max-w-xs md:max-w-sm animate-in slide-in-from-top-2 relative">
+            <button 
+              onClick={() => setShowGuide(false)}
+              className="absolute top-2 right-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <h4 className="font-semibold text-sm mb-3 pr-6">Quick Guide</h4>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 bg-primary rounded-full animate-pulse flex-shrink-0"></div>
+                <p className="text-xs text-muted-foreground leading-tight">
+                  <strong>Click</strong> anywhere in India to place hydrogen plant
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
+                <p className="text-xs text-muted-foreground leading-tight">
+                  <strong>Drag</strong> marker to find optimal location
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 bg-green-500 rounded-full flex-shrink-0"></div>
+                <p className="text-xs text-muted-foreground leading-tight">
+                  <strong>Double-click</strong> to create permanent site
+                </p>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-            <p className="text-xs text-muted-foreground">
-              <strong>Drag</strong> marker to find optimal location
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <p className="text-xs text-muted-foreground">
-              <strong>Double-click</strong> to create permanent site
-            </p>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Grouped Bottom Right Controls */}
       <div className="absolute bottom-4 right-4 z-[1000] flex flex-col items-end gap-2">
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleExportPDF}
-            disabled={isExporting}
-            className="glass-card border border-border/50 shadow-lg hover:bg-background/80 gap-2"
-            data-testid="button-export-pdf"
-          >
-            <Download className="w-4 h-4" />
-            <span className="hidden sm:inline">{isExporting ? "Exporting..." : "Export Image"}</span>
-          </Button>
-          
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleShareMap}
-            className="glass-card border border-border/50 shadow-lg hover:bg-background/80 gap-2"
-            data-testid="button-share-map"
-          >
-            <Share2 className="w-4 h-4" />
-            <span className="hidden sm:inline">Share</span>
-          </Button>
-        </div>
-
         {/* Analytics Toggle Button (when panel is hidden) */}
         {!showAnalytics && currentAnalysis && (
           <Button

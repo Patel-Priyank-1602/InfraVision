@@ -5,10 +5,11 @@ import MapView from "@/components/MapView";
 import ImpactPanel from "@/components/ImpactPanel";
 import PlantsDashboard from "@/components/PlantsDashboard";
 import PlanDetailsPanel from "@/components/PlanDetailsPanel";
+import Chatbot from "@/components/Chatbot";
 import type { HydrogenSite, SiteAnalysis } from "@/types/hydrogen";
 
 export default function Home() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedSite, setSelectedSite] = useState<HydrogenSite | null>(null);
   const [showImpactPanel, setShowImpactPanel] = useState(false);
   const [showDashboard, setShowDashboard] = useState(false);
@@ -60,7 +61,7 @@ export default function Home() {
         onDashboardToggle={() => setShowDashboard(!showDashboard)}
       />
       
-      <div className="flex h-[calc(100vh-4rem)]">
+      <div className="flex h-[calc(100vh-5rem)]">
         <Sidebar 
           isOpen={isSidebarOpen}
           onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -106,6 +107,7 @@ export default function Home() {
           
         </main>
       </div>
+      <Chatbot />
     </div>
   );
 }

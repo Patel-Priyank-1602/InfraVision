@@ -7,8 +7,8 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Home from "@/pages/Home";
 import Calculator from "@/pages/Calculator";
 import About from "@/pages/About";
+import Contact from "@/pages/Contact";
 import NotFound from "@/pages/not-found";
-import Chatbot from "@/components/Chatbot";
 
 function Router() {
   return (
@@ -16,6 +16,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/calculator" component={Calculator} />
       <Route path="/about" component={About} />
+      <Route path="/contact" component={Contact} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -28,7 +29,6 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
-          <Chatbot />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
