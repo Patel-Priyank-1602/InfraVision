@@ -71,7 +71,7 @@ export default function Chatbot() {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed top-[360px] right-3 h-14 px-5 rounded-full shadow-xl hover:shadow-2xl bg-background text-foreground z-[500] flex items-center gap-2 transition-all duration-300 hover:scale-110 border-2 border-primary/20 hover:border-primary/50 group"
+          className="fixed top-[160px] left-[10px] h-14 px-5 rounded-full shadow-xl hover:shadow-2xl bg-background text-foreground z-[500] flex items-center gap-2 transition-all duration-300 hover:scale-110 border-2 border-primary/20 hover:border-primary/50 group"
         >
           <img src="/favicon.png" alt="Chat AI" className="w-6 h-6 rounded-sm group-hover:animate-pulse object-cover drop-shadow-sm" />
           <span className="font-bold tracking-wide text-sm">Ask</span>
@@ -80,7 +80,7 @@ export default function Chatbot() {
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className="fixed top-[360px] right-3 w-[300px] sm:w-[350px] h-[400px] max-h-[50vh] shadow-2xl z-[500] flex flex-col animate-in zoom-in-95 slide-in-from-right-5 border-2 border-primary/20">
+        <Card className="fixed top-[160px] left-[10px] w-[300px] sm:w-[350px] h-[400px] max-h-[50vh] shadow-2xl z-[500] flex flex-col animate-in zoom-in-95 slide-in-from-left-5 border-2 border-primary/20">
           <CardHeader className="p-4 border-b bg-primary text-primary-foreground flex flex-row items-center justify-between rounded-t-xl">
             <div className="flex items-center gap-2">
               <MessageSquare className="w-5 h-5" />
