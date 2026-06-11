@@ -5,7 +5,7 @@
 🚀 **Live Demo:** [https://infravisionh2.onrender.com/](https://infravisionh2.onrender.com/)
 
 📱 **Mobile App:** The project also has an APK for mobile devices.
-[![Download APK](https://img.shields.io/badge/Download-APK-green?style=for-the-badge&logo=android)](APK/InfraVision.apk)
+[![Download APK](https://img.shields.io/badge/Download-APK-green?style=for-the-badge&logo=android)](https://github.com/Patel-Priyank-1602/InfraVision/raw/main/APK/InfraVision.apk)
 
 ---
 
