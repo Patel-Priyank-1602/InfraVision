@@ -40,14 +40,14 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
 * Scoring for site suitability and sustainability impact
 
 ### 🤖 AI-Powered Site Analysis
-* Powered by **Groq API** (Llama 3.1)
+* Powered by **Groq API** (`openai/gpt-oss-120b`)
 * Automatically evaluates dropped locations based on proximity to renewable energy and demand centers
 * Provides detailed recommendations and dynamic suitability scores
 
 ### 💬 AI Chatbot Assistant
 * Integrated expert chatbot specialized in India's green hydrogen infrastructure
 * Ask questions about government policies, real-world projects, and suitability scoring
-* Powered by **Groq API** (Llama 3.1) for fast and contextual responses
+* Powered by **Groq API** (`openai/gpt-oss-120b`) for fast and contextual responses
 
 
 ### 📊 Dashboard & Analysis
@@ -108,7 +108,7 @@ Planning and expanding green hydrogen infrastructure is complex. Urban planners,
 ### Backend
 * Node.js + Express  
 * In-Memory Data Storage (No database setup required)
-* Groq API (Llama 3.1) for AI analysis  
+* Groq API (`openai/gpt-oss-120b`) for AI analysis  
 
 ### Map Integration
 * Leaflet.js Maps  
@@ -126,7 +126,7 @@ sequenceDiagram
     participant Frontend as React Map UI
     participant Backend as Express Server
     participant Storage as In-Memory Data
-    participant Groq as Groq API (Llama 3.1)
+    participant Groq as Groq API (openai/gpt-oss-120b)
 
     User->>Frontend: Drag & Drop site marker
     Frontend->>Backend: POST /api/hydrogen-sites (lat, lng)

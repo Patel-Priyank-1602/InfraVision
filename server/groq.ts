@@ -52,7 +52,7 @@ Provide helpful, India-specific advice about green hydrogen infrastructure. Keep
     ];
 
     const completion = await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant",
+      model: "openai/gpt-oss-120b",
       messages: groqMessages,
       temperature: 0.7,
       max_tokens: 1024,
@@ -124,7 +124,7 @@ Return your analysis in JSON format with this exact structure:
 }`;
 
     const completion = await groq.chat.completions.create({
-      model: "llama-3.1-8b-instant",
+      model: "openai/gpt-oss-120b",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
       max_tokens: 1024,
